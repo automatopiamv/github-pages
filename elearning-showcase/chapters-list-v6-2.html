@@ -18,28 +18,28 @@
         }
         
         .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             width: 100%;
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
             padding-top: calc(80px + 20px); /* Adjust the top padding based on the header banner height and desired gap */
+            min-height: calc(100% - 140px); /* Exclude header and footer height */
         }
 
         h1 {
-            margin: 0;
             text-align: center;
-            line-height: 1.3;
-            font-size: 24px;
-            font-weight: 700;
-            white-space: normal;
-            word-wrap: break-word;
+            margin: 40px 0;
         }
 
         .video-list {
             display: flex;
-            flex-wrap: wrap;
+            flex-direction: column;
             gap: 20px;
-            justify-content: center;
+            align-items: center;
+            width: 100%;
         }
 
         .video-item {
@@ -84,11 +84,15 @@
             color: #333;
             transition: transform 0.2s;
         }
-        
-        .video-item:hover .play-button {
+                
+         .video-item:hover .play-button {
             transform: translate(-50%, -50%) scale(1.1);
         }
         
+        .video-item:active .play-button {
+            transform: translate(-50%, -50%) scale(0.9);
+        }
+
         .top-banner {
             position: fixed;
             left: 0;
@@ -101,6 +105,16 @@
             z-index: 1000;
             color: #ffffff;
             box-sizing: border-box;
+        }
+        
+        h1 {
+            margin: 0;
+            text-align: center;
+            line-height: 1.3;
+            font-size: 24px;
+            font-weight: 700;
+            white-space: normal;
+            word-wrap: break-word;
         }
 
         .bottom-banner {
@@ -119,18 +133,6 @@
         .bottom-banner img {
             height: 30px;
             width: auto;
-        }
-        
-        @media (min-width: 620px) {
-            .video-item {
-                width: calc(50% - 20px);
-            }
-        }
-
-        @media (min-width: 920px) {
-            .video-item {
-                width: calc(33.33% - 20px);
-            }
         }
     </style>
     <script>
@@ -152,15 +154,6 @@
                 console.error('Error:', error);
             });
         }
-
-        function playButtonClicked(event) {
-            const playButton = event.currentTarget;
-            playButton.style.transform = 'translate(-50%, -50%) scale(0.9)';
-            setTimeout(() => {
-                playButton.style.transform = 'translate(-50%, -50%)';
-            }, 100);
-            playVideo();
-        }
     </script>
 </head>
 <body>
@@ -170,9 +163,9 @@
     <div class="container">
         <div class="video-list">
             <!-- Replace "YOUR_VIDEO_URL" with the actual video URL and "YOUR_THUMBNAIL_IMAGE_URL" with the thumbnail image URL -->
-            <div class="video-item" onclick="playButtonClicked(event);">
+            <div class="video-item" onclick="playVideo();">
                 <img src="https://i.ibb.co/Vg5mBTN/world.png" alt="Introductory video">
-                <h3>1. Introductory video (v6.2.2)</h3>
+                <h3>1. Introductory video (v6.1)</h3>
                 <div class="play-button"><i class="fas fa-walking"></i></div>
             </div>
             <!-- Add more video-item elements for each chapter with their respective video URLs and thumbnail image URLs -->
