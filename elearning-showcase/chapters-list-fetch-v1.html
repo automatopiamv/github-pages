@@ -6,7 +6,85 @@
     <title>EdTech Course - Video Chapters</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
     <style>
-        /* ... */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .video-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .video-item {
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 100%;
+            max-width: 300px;
+            position: relative;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .video-item:hover {
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .video-item img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .video-item h3 {
+            margin: 20px 0;
+        }
+
+        .video-item .play-button {
+            width: 60px;
+            height: 60px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            color: #333;
+        }
+        
+        @media (min-width: 620px) {
+            .video-item {
+                width: calc(50% - 10px);
+            }
+        }
+
+        @media (min-width: 920px) {
+            .video-item {
+                width: calc(33.33% - 10px);
+            }
+        }
     </style>
     <script>
         function playVideo() {
