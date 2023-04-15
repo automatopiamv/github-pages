@@ -9,7 +9,7 @@
         html, body {
             font-family: 'Roboto', sans-serif;
             background-color: #f0f0f0;
-            background-image: url('https://i.ibb.co/ZXHp9b9/robot-tile-background.png');
+            background-image: url('YOUR_ROBOT_PATTERN_IMAGE_URL');
             margin: 0;
             padding: 0;
             height: 100%;
@@ -92,6 +92,24 @@
             color: #333;
         }
         
+        .bottom-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #0056D2; /* Coursera brand color */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 60px;
+            z-index: 1000;
+        }
+
+        .bottom-banner img {
+            height: 30px;
+            width: auto;
+        }
+        
         @media (min-width: 620px) {
             .video-item {
                 width: calc(50% - 20px);
@@ -132,11 +150,14 @@
             <!-- Replace "YOUR_VIDEO_URL" with the actual video URL and "YOUR_THUMBNAIL_IMAGE_URL" with the thumbnail image URL -->
             <div class="video-item" onclick="playVideo();">
                 <img src="https://i.ibb.co/Vg5mBTN/world.png" alt="Introductory video">
-                <h3>1. Introductory video (v4)</h3>
+                <h3>1. Introductory video (v2)</h3>
                 <div class="play-button">&#9658;</div>
             </div>
             <!-- Add more video-item elements for each chapter with their respective video URLs and thumbnail image URLs -->
         </div>
+    </div>
+    <div class="bottom-banner">
+        <img src="https://i.ibb.co/dKnJrKS/coursera-logo-white.png" alt="Coursera logo">
     </div>
 </body>
 </html>
