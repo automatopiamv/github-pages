@@ -9,24 +9,19 @@
         /* ... */
     </style>
     <script>
-        function playVideo(videoUrl) {
+        function playVideo() {
             // Replace 'YOUR_API_URL' with the actual API URL
-            fetch('YOUR_API_URL', {
+            fetch('https://us-central1-topia-1.cloudfunctions.net/scrwrmkztrdx5gmuk?email=rex@topia.io&world=rex&key=8db38de2-3759-45dc-b411-d806414d7000&asset_name=2021+Sign&library=topia&pos=[0,0]', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    videoUrl: videoUrl,
-                }),
+                body: JSON.stringify({}),
             })
             .then((response) => response.json())
             .then((data) => {
                 // Perform any additional actions after receiving the response
                 console.log(data);
-
-                // Open the video URL in a new tab
-                window.open(videoUrl, '_blank');
             })
             .catch((error) => {
                 console.error('Error:', error);
@@ -39,8 +34,8 @@
         <h1>EdTech Course - Video Chapters</h1>
         <div class="video-list">
             <!-- Replace "YOUR_VIDEO_URL" with the actual video URL and "YOUR_THUMBNAIL_IMAGE_URL" with the thumbnail image URL -->
-            <div class="video-item" onclick="playVideo('YOUR_VIDEO_URL');">
-                <img src="YOUR_THUMBNAIL_IMAGE_URL" alt="Introductory video">
+            <div class="video-item" onclick="playVideo();">
+                <img src="https://i.ibb.co/Vg5mBTN/world.png" alt="Introductory video">
                 <h3>1. Introductory video</h3>
                 <div class="play-button">&#9658;</div>
             </div>
