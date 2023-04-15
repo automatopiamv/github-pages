@@ -9,7 +9,7 @@
         html, body {
             font-family: 'Roboto', sans-serif;
             background-color: #f0f0f0;
-            background-image: url('https://i.ibb.co/Htx8Qbf/robot-tile-background-v2.png');
+            background-image: url('YOUR_ROBOT_PATTERN_IMAGE_URL');
             margin: 0;
             padding: 0;
             height: 100%;
@@ -92,6 +92,36 @@
             color: #333;
         }
         
+        .top-banner, .bottom-banner {
+            position: fixed;
+            left: 0;
+            right: 0;
+            background-color: #0056D2; /* Coursera brand color */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 60px;
+            z-index: 1000;
+            color: #ffffff;
+        }
+
+        .top-banner {
+            top: 0;
+        }
+
+        .bottom-banner {
+            bottom: 0;
+        }
+
+        .bottom-banner img {
+            height: 30px;
+            width: auto;
+        }
+
+        .container {
+            padding-top: 80px;
+        }
+        
         .bottom-banner {
             position: fixed;
             bottom: 0;
@@ -144,8 +174,10 @@
     </script>
 </head>
 <body>
-    <div class="container">
+    <div class="top-banner">
         <h1>EdTech Course - Video Chapters</h1>
+    </div>
+    <div class="container">
         <div class="video-list">
             <!-- Replace "YOUR_VIDEO_URL" with the actual video URL and "YOUR_THUMBNAIL_IMAGE_URL" with the thumbnail image URL -->
             <div class="video-item" onclick="playVideo();">
