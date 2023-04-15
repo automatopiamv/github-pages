@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EdTech Course - Video Chapters</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+    <style>
+        /* ... */
+    </style>
+    <script>
+        function playVideo(videoUrl) {
+            // Replace 'YOUR_API_URL' with the actual API URL
+            fetch('YOUR_API_URL', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    videoUrl: videoUrl,
+                }),
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                // Perform any additional actions after receiving the response
+                console.log(data);
+
+                // Open the video URL in a new tab
+                window.open(videoUrl, '_blank');
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>EdTech Course - Video Chapters</h1>
+        <div class="video-list">
+            <!-- Replace "YOUR_VIDEO_URL" with the actual video URL and "YOUR_THUMBNAIL_IMAGE_URL" with the thumbnail image URL -->
+            <div class="video-item" onclick="playVideo('YOUR_VIDEO_URL');">
+                <img src="YOUR_THUMBNAIL_IMAGE_URL" alt="Introductory video">
+                <h3>1. Introductory video</h3>
+                <div class="play-button">&#9658;</div>
+            </div>
+            <!-- Add more video-item elements for each chapter with their respective video URLs and thumbnail image URLs -->
+        </div>
+    </div>
+</body>
+</html>
