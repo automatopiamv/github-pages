@@ -171,9 +171,9 @@
             console.log(`Dropping Asset "${assetId}" into Topia World "${urlSlug}"...`);
 
             const payload = {
-              assetId,
+              assetId: assetId,
               position: { x: dropPos[0], y: dropPos[1] },
-              uniqueName,
+              uniqueName: uniqueName
             };
 
             fetch(`https://api.topia.io/api/world/${urlSlug}/assets?email=${apiEmail}`, {
@@ -345,7 +345,7 @@
     </div>
     <div class="bottom-banner">
         <div class="version-container"> <!-- Add this line -->
-            <span class="version">7.2.1</span>
+            <span class="version">7.2.2</span>
         </div>
         <img src="https://i.ibb.co/dKnJrKS/coursera-logo-white.png" alt="Coursera logo">
         <i class="fas fa-robot"></i>
