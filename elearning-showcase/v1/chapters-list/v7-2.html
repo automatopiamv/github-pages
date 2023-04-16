@@ -157,9 +157,42 @@
         }
     </style>
     <script>
-        const apiSlug = "elearning-showcase"
+        const urlSlug = "elearning-showcase"
         const apiEmail = "rex@topia.io"
         const apiKey = "8db38de2-3759-45dc-b411-d806414d7000"
+        
+        /**
+        * Drops a single asset by ID into the world at specified coordinates.
+        * @param {string} assetId - The ID of the asset to be dropped.
+        * @param {Array<number>} dropPos - An array of x and y coordinates where the asset should be dropped ([x, y]).
+        * @param {string} [uniqueName=null] - Optional unique name for the asset.
+        */
+        function dropAssetByIdInWorld(assetId, dropPos, uniqueName = null) {
+            console.log(`Dropping Asset "${assetId}" into Topia World "${urlSlug}"...`);
+
+            const payload = {
+              assetId,
+              position: { x: dropPos[0], y: dropPos[1] },
+              uniqueName,
+            };
+
+            fetch(`https://api.topia.io/api/world/${urlSlug}/assets?email=${apiEmail}`, {
+              method: "POST",
+              headers: { Authorization: apiKey, "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            })
+            .then((response) => response.json())
+            .then((data) => {
+              // Perform any additional actions after receiving the response
+              console.log(data);
+            })
+            .catch((error) => {
+              // Log any errors that occur during the fetch
+              console.error('Error:', error);
+            });
+        }
+
+        
         function playVideo() {
             // Replace 'YOUR_API_URL' with the actual API URL
             fetch('https://us-central1-topia-1.cloudfunctions.net/scrwrmkztrdx5gmuk?email=' + apiEmail + '&world=' + apiSlug + '&key=' + apiKey + '&asset_name=2021+Sign&library=topia&pos=[0,0]', {
@@ -199,7 +232,7 @@
     <div class="container">
         <div class="video-list">
             <!-- Introductory Video -->
-            <div class="video-item" onclick="playVideo(); selectChapter(this);">
+            <div class="video-item" onclick="dropAssetByIdInWorld('0W54N12Ryxgi7Gnb6KTz', [-523, 163.1707317073171], 'testing'); selectChapter(this);">
                 <img src="https://i.ibb.co/HG85GV7/introductory-video.png" alt="Introductory Video">
                 <h3>Introductory Video</h3>
                 <div class="play-button">
