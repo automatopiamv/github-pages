@@ -130,7 +130,7 @@
             right: 0;
             background-color: #0056D2; /* Coursera brand color */
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
             height: 60px;
             z-index: 1000;
@@ -145,6 +145,15 @@
         .bottom-banner .version {
             color: #ffffff;
             font-size: 14px;
+        }
+        
+        .version-container {
+            position: absolute;
+            left: 20px;
+        }
+
+        .version {
+            color: white;
         }
     </style>
     <script>
@@ -302,8 +311,10 @@
         </div>
     </div>
     <div class="bottom-banner">
+        <div class="version-container"> <!-- Add this line -->
+            <span class="version">7.1.1</span>
+        </div>
         <img src="https://i.ibb.co/dKnJrKS/coursera-logo-white.png" alt="Coursera logo">
-        <span class="version">7.1.2</span>
         <i class="fas fa-robot"></i>
     </div>
 </body>
