@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EdTech Course - Video Chapters</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css" integrity="sha512-bsAE4dS5AVZc8IO1w8H0p0sGFxwbpJ7742GvBE9tHgXMg65+gGIXf2na6l8Mf1GgGGY0CIhJ0bDOF9XWQuqB3g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        html, body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f0f0;
+            background-image: url('https://i.ibb.co/Htx8Qbf/robot-tile-background-v2.png');
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            padding-top: calc(80px + 20px); /* Adjust the top padding based on the header banner height and desired gap */
+            min-height: calc(100% - 140px); /* Exclude header and footer height */
+        }
+
+        h1 {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .video-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+            width: 100%;
+        }
+
+        .video-item {
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 100%;
+            max-width: 240px;
+            position: relative;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .video-item:hover {
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .video-item img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .video-item h3 {
+            margin: 20px 0;
+        }
+
+        .video-item .play-button {
+            width: 60px;
+            height: 60px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            color: #333;
+            transition: transform 0.2s;
+        }
+                
+         .video-item:hover .play-button {
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+        
+        .video-item:active .play-button {
+            transform: translate(-50%, -50%) scale(0.9);
+        }
+        
+        /* Selected chapter styling */
+        .video-item.selected {
+            background-color: #003B8B;
+            color: #ffffff;
+        }
+
+        .top-banner {
+            position: fixed;
+            left: 0;
+            right: 0;
+            background-color: #0056D2; /* Coursera brand color */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            z-index: 1000;
+            color: #ffffff;
+            box-sizing: border-box;
+        }
+        
+        h1 {
+            margin: 0;
+            text-align: center;
+            line-height: 1.3;
+            font-size: 24px;
+            font-weight: 700;
+            white-space: normal;
+            word-wrap: break-word;
+        }
+
+        .bottom-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #0056D2; /* Coursera brand color */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 60px;
+            z-index: 1000;
+            padding: 0 20px;
+        }
+
+        .bottom-banner img {
+            height: 30px;
+            width: auto;
+        }
+        
+        .bottom-banner .version {
+            color: #ffffff;
+            font-size: 14px;
+        }
+        
+        .version-container {
+            position: absolute;
+            left: 20px;
+        }
+
+        .version {
+            color: white;
+        }
+    </style>
+    <script>
+        const urlSlug = "elearning-showcase"
+        const apiEmail = "rex@topia.io"
+        const apiKey = "8db38de2-3759-45dc-b411-d806414d7000"
+
+        /**
+         * Drop a Topia Scene in World.
+         *
+         * @param {string} sceneId - The scene ID to be dropped.
+         * @param {Object} dropPos - The position coordinates where the scene will be dropped.
+         * @param {number} dropPos.x - The x-coordinate of the position.
+         * @param {number} dropPos.y - The y-coordinate of the position.
+         * @param {string} suffix - The asset suffix.
+         */
+        async function dropTopiaSceneByCoords(sceneId, dropPos, suffix) {
+          console.log(`Dropping Scene "${sceneId}" into Topia World (${urlSlug})...`);
+
+          const payload = {
+            sceneId: sceneId,
+            position: { x: dropPos.x, y: dropPos.y },
+            assetSuffix: suffix,
+          };
+
+          const apiUrl = `https://api.topia.io/api/world/${urlSlug}/drop-scene?email=${apiEmail}`;
+
+          try {
+            const response = await fetch(apiUrl, {
+              method: "POST",
+              headers: { Authorization: apiKey, "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+
+            const resp = response.status === 200
+              ? { success: true, message: `Scene "${sceneId}" successfully dropped into Topia World "${urlSlug}".` }
+              : { success: false, message: response.statusText };
+
+            console.log("data", response);
+            return resp;
+          } catch (error) {
+            console.error("Error occurred:", error);
+            return { success: false, message: error.message };
+          }
+        }
+
+        /**
+         * Retrieve all assets in a Topia World with the specified suffix and remove them.
+         *
+         * @param {string} suffix - The suffix of the assets to remove.
+         */
+        async function removeTopiaWorldAssetsBySuffix(suffix) {
+          console.log(`Retrieving All Assets for Topia World "${urlSlug}" with suffix "${suffix}"...`);
+
+          const apiUrl = `https://api.topia.io/api/world/${urlSlug}/assets?email=${apiEmail}`;
+          const assets = await fetch(apiUrl, {
+            method: "GET",
+            headers: { Authorization: apiKey, "Content-Type": "application/json" },
+          }).then(r => r.json());
+
+          console.log("assets", assets);
+          console.log(`${assets.length} assets detected in world "${urlSlug}".`);
+
+          const suffixAssets = getKvArrayObjsFromValue(assets, "uniqueName", suffix);
+
+          // Loop through suffixAssets and remove each one.
+          for (const asset of suffixAssets) {
+            await rmAssetFromWorld(asset.id);
+          }
+
+          /**
+           * Find all objects in an array with a specified key-value containing a suffix.
+           *
+           * @param {Object[]} objArray - The array of objects to search.
+           * @param {string} key - The key of the object to match.
+           * @param {string} suffix - The suffix to find in the value.
+           * @returns {Object[]} - The filtered array of objects.
+           */
+          function getKvArrayObjsFromValue(objArray, key, suffix) {
+            return objArray.reduce((accumulator, element) => {
+              if (!element[key]) {
+                return accumulator;
+              }
+
+              if (element[key].endsWith(suffix)) {
+                return accumulator.concat(element);
+              }
+
+              return accumulator;
+            }, []);
+          }
+
+          /**
+           * Remove a single asset from a Topia World.
+           *
+           * @param {string} assetId - The ID of the asset to remove.
+           * @returns {Promise<Object>} - The API success response.
+           */
+          async function rmAssetFromWorld(assetId) {
+            console.log(`Removing Asset "${assetId}" from Topia World "${urlSlug}"...`);
+
+            const apiUrl = `https://api.topia.io/api/world/${urlSlug}/assets/${assetId}?email=${apiEmail}`;
+
+            const apiSuccess = await fetch(apiUrl, {
+              method: "DELETE",
+              headers: { Authorization: apiKey, "Content-Type": "application/json" },
+            }).then(r => r.json());
+
+            console.log("apiSuccess", apiSuccess);
+            return apiSuccess;
+          }
+        }
+
+      
+        // Change Chapter object color when selected
+        function selectChapter(element) {
+            // Deselect any previously selected chapters
+            const selectedChapters = document.querySelectorAll('.video-item.selected');
+            selectedChapters.forEach((chapter) => {
+                chapter.classList.remove('selected');
+            });
+
+            // Select the clicked chapter
+            element.classList.add('selected');
+        }
+    </script>
+</head>
+<body>
+    <div class="top-banner">
+        <h1>EdTech Course - Video Chapters</h1>
+    </div>
+    <div class="container">
+        <div class="video-list">
+            <!-- Introductory Video -->
+            <div class="video-item" onclick="selectChapter(this); dropTopiaSceneByCoords('OuUt7ktK4AnO01MwqxTO', {x:-523, y:163.1707317073171}, 'video-list'); removeTopiaWorldAssetsBySuffix('video-list');">
+                <img src="https://i.ibb.co/HG85GV7/introductory-video.png" alt="Introductory Video">
+                <h3>Introductory Video</h3>
+                <div class="play-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                </div>
+            </div>
+            <!-- 1-1: Game Theory Intro - TCP Backoff -->
+            <div class="video-item" onclick="playVideo(); selectChapter(this);">
+                <img src="https://i.ibb.co/P914NrZ/1-1.png" alt="Game Theory Intro - TCP Backoff">
+                <h3>1-1: Game Theory Intro - TCP Backoff</h3>
+                <div class="play-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                </div>
+            </div>
+            <!-- 1-2: Self-Interested Agents and Utility Theory -->
+            <div class="video-item" onclick="playVideo(); selectChapter(this);">
+                <img src="https://i.ibb.co/zR4JhQk/1-2.png" alt="Self-Interested Agents and Utility Theory">
+                <h3>1-2: Self-Interested Agents and Utility Theory</h3>
+                <div class="play-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                </div>
+            </div>
+            <!-- 1-3: Defining Games -->
+            <div class="video-item" onclick="playVideo(); selectChapter(this);">
+                <img src="https://i.ibb.co/48F6RV9/1-3.png" alt="Defining Games">
+                <h3>1-3: Defining Games</h3>
+                <div class="play-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                </div>
+            </div>
+            <!-- 1-4: Examples of Games -->
+            <div class="video-item" onclick="playVideo(); selectChapter(this);">
+                <img src="https://i.ibb.co/Y0zbdHF/1-4.png" alt="Examples of Games">
+                <h3>1-4: Examples of Games</h3>
+                <div class="play-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                </div>
+            </div>
+            <!-- 1-5: Nash Equilibrium Intro -->
+            <div class="video-item" onclick="playVideo(); selectChapter(this);">
+                <img src="https://i.ibb.co/XDf37cJ/1-5.png" alt="Nash Equilibrium Intro">
+                <h3>1-5: Nash Equilibrium Intro</h3>
+                <div class="play-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                </div>
+            </div>
+            <!-- 1-6: Strategic Reasoning -->
+            <div class="video-item" onclick="playVideo(); selectChapter(this);">
+                <img src="https://i.ibb.co/rG5LjKb/1-6.png" alt="Strategic Reasoning">
+                <h3>1-6: Strategic Reasoning</h3>
+                <div class="play-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                </div>
+            </div>
+            <!-- 1-7: Best Response and Nash Equilibrium -->
+            <div class="video-item" onclick="playVideo(); selectChapter(this);">
+                <img src="https://i.ibb.co/fQ66Ntj/1-7.png" alt="Best Response and Nash Equilibrium">
+                <h3>1-7: Best Response and Nash Equilibrium</h3>
+                <div class="play-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                </div>
+            </div>
+            <!-- 1-8: Nash Equilibrium of Example Games -->
+            <div class="video-item" onclick="playVideo(); selectChapter(this);">
+                <img src="https://i.ibb.co/jf9CYT5/1-8.png" alt="Nash Equilibrium of Example Games">
+                <h3>1-8: Nash Equilibrium of Example Games</h3>
+                <div class="play-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                </div>
+            </div>
+            <!-- 1-9: Dominant Strategies -->
+            <div class="video-item" onclick="playVideo(); selectChapter(this);">
+                <img src="https://i.ibb.co/HY1v9Ch/1-9.png" alt="Dominant Strategies">
+                <h3>1-9: Dominant Strategies</h3>
+                <div class="play-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                </div>
+            </div>
+            <!-- 1-10: Pareto Optimality -->
+            <div class="video-item" onclick="playVideo(); selectChapter(this);">
+                <img src="https://i.ibb.co/SQvdMHP/1-10.png" alt="Pareto Optimality">
+                <h3>1-10: Pareto Optimality</h3>
+                <div class="play-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bottom-banner">
+        <div class="version-container"> <!-- Add this line -->
+            <span class="version">7.3.2</span>
+        </div>
+        <img src="https://i.ibb.co/dKnJrKS/coursera-logo-white.png" alt="Coursera logo">
+        <i class="fas fa-robot"></i>
+    </div>
+</body>
+</html>
