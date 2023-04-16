@@ -192,25 +192,45 @@
             });
         }
 
-        
-        function playVideo() {
-            // Replace 'YOUR_API_URL' with the actual API URL
-            fetch('https://us-central1-topia-1.cloudfunctions.net/scrwrmkztrdx5gmuk?email=' + apiEmail + '&world=' + apiSlug + '&key=' + apiKey + '&asset_name=2021+Sign&library=topia&pos=[0,0]', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({}),
-            })
-            .then((response) => response.json())
-            .then((data) => {
-                // Perform any additional actions after receiving the response
-                console.log(data);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
+        /**
+         * Drop a Topia Scene in World.
+         *
+         * @param {string} sceneId - The scene ID to be dropped.
+         * @param {Object} dropPos - The position coordinates where the scene will be dropped.
+         * @param {number} dropPos.x - The x-coordinate of the position.
+         * @param {number} dropPos.y - The y-coordinate of the position.
+         * @param {string} suffix - The asset suffix.
+         */
+        async function dropTopiaSceneByCoords(sceneId, dropPos, suffix) {
+          console.log(`Dropping Scene "${sceneId}" into Topia World (${urlSlug})...`);
+
+          const payload = {
+            sceneId: sceneId,
+            position: { x: dropPos.x, y: dropPos.y },
+            assetSuffix: suffix,
+          };
+
+          const apiUrl = `https://api.topia.io/api/world/${urlSlug}/drop-scene?email=${apiEmail}`;
+
+          try {
+            const response = await fetch(apiUrl, {
+              method: "POST",
+              headers: { Authorization: apiKey, "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
             });
+
+            const resp = response.status === 200
+              ? { success: true, message: `Scene "${sceneId}" successfully dropped into Topia World "${urlSlug}".` }
+              : { success: false, message: response.statusText };
+
+            console.log("data", response);
+            return resp;
+          } catch (error) {
+            console.error("Error occurred:", error);
+            return { success: false, message: error.message };
+          }
         }
+
         
         // Change Chapter object color when selected
         function selectChapter(element) {
@@ -232,7 +252,7 @@
     <div class="container">
         <div class="video-list">
             <!-- Introductory Video -->
-            <div class="video-item" onclick="dropAssetByIdInWorld('ncDNvvLpvCblpSmADz7j', [-523, 163.1707317073171], 'testing'); selectChapter(this);">
+            <div class="video-item" onclick="dropTopiaSceneByCoords('OuUt7ktK4AnO01MwqxTO', {x:-523, y:163.1707317073171}, introductory-video); selectChapter(this);">
                 <img src="https://i.ibb.co/HG85GV7/introductory-video.png" alt="Introductory Video">
                 <h3>Introductory Video</h3>
                 <div class="play-button">
