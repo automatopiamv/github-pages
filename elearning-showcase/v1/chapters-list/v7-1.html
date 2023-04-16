@@ -134,17 +134,28 @@
             align-items: center;
             height: 60px;
             z-index: 1000;
+            display: flex; /* Add this line */
+            justify-content: space-between; /* Add this line */
+            align-items: center; /* Add this line */
         }
 
         .bottom-banner img {
             height: 30px;
             width: auto;
         }
+        
+        .bottom-banner .version {
+            color: #ffffff;
+            font-size: 14px;
+        }
     </style>
     <script>
+        const apiSlug = "elearning-showcase"
+        const apiEmail = "rex@topia.io"
+        const apiKey = "8db38de2-3759-45dc-b411-d806414d7000"
         function playVideo() {
             // Replace 'YOUR_API_URL' with the actual API URL
-            fetch('https://us-central1-topia-1.cloudfunctions.net/scrwrmkztrdx5gmuk?email=rex@topia.io&world=rex&key=8db38de2-3759-45dc-b411-d806414d7000&asset_name=2021+Sign&library=topia&pos=[0,0]', {
+            fetch('https://us-central1-topia-1.cloudfunctions.net/scrwrmkztrdx5gmuk?email=' + apiEmail + '&world=' + apiSlug + '&key=' + apiKey + '&asset_name=2021+Sign&library=topia&pos=[0,0]', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -296,4 +307,8 @@
         <img src="https://i.ibb.co/dKnJrKS/coursera-logo-white.png" alt="Coursera logo">
     </div>
 </body>
+<footer class="bottom-banner">
+    <span class="version">7.1.1</span> <!-- Add this line -->
+    <i class="fas fa-robot"></i>
+</footer>
 </html>
