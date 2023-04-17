@@ -157,9 +157,46 @@
         }
     </style>
     <script>
+        // Script constants
         const urlSlug = "elearning-showcase"
         const apiEmail = "rex@topia.io"
         const apiKey = "8db38de2-3759-45dc-b411-d806414d7000"
+
+        // Check Chapter asset states upon page open
+        document.addEventListener('DOMContentLoaded', updateChaptersState);
+
+        /**
+         * Update the state of video chapters based on their associated assets' clickType property.
+         * If clickType is null, display the default status.
+         * If clickType is 'link', display the 'selected' state.
+         */
+        async function updateChaptersState() {
+
+          // An array of asset IDs associated with each video chapter
+          const assetIds = [
+            '-NTCkdeR86BgaKu-UGVs',
+            '-NTClaATC2FcMNu7SCWm',
+            '-NTCm4gfrTQrsND_bUl9',
+            // Add the rest of the asset IDs here
+          ];
+
+          // Get all video-item elements in the page
+          const videoItems = document.querySelectorAll('.video-item');
+
+          // Iterate through each asset ID
+          for (let i = 0; i < assetIds.length; i++) {
+            // Get the asset data using the getTopiaWorldAssetById function
+            const asset = await getTopiaWorldAssetById(apiKey, apiEmail, urlSlug, assetIds[i]);
+
+            // Get the clickType property from the asset
+            const clickType = asset.clickType;
+
+            // If clickType is 'link', add the 'selected' class to the corresponding video-item
+            if (clickType === 'link') {
+              videoItems[i].classList.add('selected');
+            }
+          }
+        }
 
         /**
          * Toggle Web Image Layer images and Asset Link based on the asset's current clickType
