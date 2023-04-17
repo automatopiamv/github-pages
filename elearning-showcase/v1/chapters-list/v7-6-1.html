@@ -199,29 +199,55 @@
         }
 
         /**
-         * Toggle Web Image Layer images and Asset Link based on the asset's current clickType
+         * Toggle Web Image Layer images and Asset Link based on the asset's current clickType using the provided presetId.
          *
          * @param {string} apiKey - The Topia API key.
          * @param {string} apiEmail - The Topia API email.
          * @param {string} urlSlug - The Topia world URL slug.
-         * @param {string} assetId - The asset ID.
-         * @param {string} imgURL1 - The first image URL.
-         * @param {string} imgURL2 - The second image URL.
-         * @param {string} layer - The layer to update, either 'top' or 'bottom'.
+         * @param {number} presetId - The ID of the preset configuration to apply.
          * @returns {Promise<Object>} - A promise that resolves to the updated world asset.
          */
-        async function toggleWrldAssetWebImgsAndLink(assetId, imgURL1, imgURL2, layer, linkUrl, linkTitle) {
-          console.log(`Setting Topia World ("${urlSlug}") asset "${assetId}" Web Image and Link...`);
+        async function toggleWrldAssetWebImgsAndLinkByPresets(presetId) {
+          // Presets Values
+          let layer = "bottom"
+          let linkUrl = "https://automatopiamv.github.io/github-pages/elearning-showcase/v1/video-player/v1-4.html?video=" + presetId
+          let presets = [
+            {
+              int: 0,
+              assetId: "-NTCkdeR86BgaKu-UGVs",
+              imgURL1: "https://i.ibb.co/6Fv8fqy/m-southwest-arrow-white.png",
+              imgURL2: "https://i.ibb.co/dgCJYvt/m-southwest-arrow-blue.png",
+              linkTitle: "Introductory Video"
+            },
+            {
+              int: 1,
+              assetId: "-NTClaATC2FcMNu7SCWm",
+              imgURL1: "https://i.ibb.co/pfDNXSj/m-crossroads-Northwest-white.png",
+              imgURL2: "https://i.ibb.co/6w2syJ0/m-crossroads-Northwest-blue.png",
+              linkTitle: "Game Theory Intro - TCP Backoff"
+            },
+            {
+              int: 2,
+              assetId: "-NTCm4gfrTQrsND_bUl9",
+              imgURL1: "https://i.ibb.co/6Fv8fqy/m-southwest-arrow-white.png",
+              imgURL2: "https://i.ibb.co/dgCJYvt/m-southwest-arrow-blue.png",
+              linkTitle: "Self-Interested Agents and Utility Theory"
+            }
+          ];
+
+          // Get the preset object based on the presetId
+          const preset = presets[presetId];
+
+          console.log(`Setting Topia World ("${urlSlug}") asset "${preset.assetId}" Web Image and Link...`);
 
           // Get the asset
-          const asset = await getTopiaWorldAssetById(apiKey, apiEmail, urlSlug, assetId);
+          const asset = await getTopiaWorldAssetById(apiKey, apiEmail, urlSlug, preset.assetId);
           console.log('asset', asset);
 
           // Determine the clickType and newImgURL based on the current clickType
           const currentClickType = asset.clickType || 'none'; // Treat null as 'none'
-          console.log('currentClickType',currentClickType)
           const newClickType = currentClickType === 'none' ? 'link' : 'none';
-          const newImgURL = currentClickType === 'none' ? imgURL2 : imgURL1;
+          const newImgURL = currentClickType === 'none' ? preset.imgURL2 : preset.imgURL1;
 
           const payloadImg = {
             [layer]: newImgURL
@@ -230,29 +256,36 @@
           const payloadLink = {
             "clickType": newClickType,
             "clickableLink": linkUrl,
-            "clickableLinkTitle": linkTitle
+            "clickableLinkTitle": preset.linkTitle
           };
 
-          const apiUrlImg = `https://api.topia.io/api/world/${urlSlug}/assets/${assetId}/set-webimage-layers?email=${apiEmail}`;
-          const apiUrlLink = `https://api.topia.io/api/world/${urlSlug}/assets/${assetId}/change-click-type?email=${apiEmail}`;
+          const apiUrlImg = `https://api.topia.io/api/world/${urlSlug}/assets/${preset.assetId}/set-webimage-layers?email=${apiEmail}`;
+          const apiUrlLink = `https://api.topia.io/api/world/${urlSlug}/assets/${preset.assetId}/change-click-type?email=${apiEmail}`;
 
           // Update the web image layer
           await fetch(apiUrlImg, {
             method: "PUT",
-            headers: { 'Authorization': apiKey, 'Content-Type': 'application/json' },
+            headers: {
+              'Authorization': apiKey,
+              'Content-Type': 'application/json'
+            },
             body: JSON.stringify(payloadImg)
           }).then(r => r.json());
 
           // Update the asset link
           const updatedAsset = await fetch(apiUrlLink, {
             method: "PUT",
-            headers: { 'Authorization': apiKey, 'Content-Type': 'application/json' },
+            headers: {
+              'Authorization': apiKey,
+              'Content-Type': 'application/json'
+            },
             body: JSON.stringify(payloadLink)
           }).then(r => r.json());
 
-          //console.log('updatedAssetImg', updatedAssetImg);
           console.log('updatedAsset', updatedAsset);
-          return { updatedAsset };
+          return {
+            updatedAsset
+          };
         }
 
         /**
@@ -271,7 +304,10 @@
 
           const asset = await fetch(apiUrl, {
             method: "GET",
-            headers: { 'Authorization': apiKey, 'Content-Type': 'application/json' }
+            headers: {
+              'Authorization': apiKey,
+              'Content-Type': 'application/json'
+            }
           }).then(r => r.json());
 
           console.log('asset', asset);
@@ -299,7 +335,7 @@
     <div class="container">
         <div class="video-list">
             <!-- Introductory Video -->
-            <div class="video-item" onclick="selectChapter(this); toggleWrldAssetWebImgsAndLink('-NTCkdeR86BgaKu-UGVs', 'https://i.ibb.co/6Fv8fqy/m-southwest-arrow-white.png', 'https://i.ibb.co/dgCJYvt/m-southwest-arrow-blue.png', 'bottom', 'https://automatopiamv.github.io/github-pages/elearning-showcase/v1/video-player/v1-2.html', 'Introductory Video');">    
+            <div class="video-item" onclick="toggleWrldAssetWebImgsAndLinkByPresets(0); selectChapter(this);">    
                 <img src="https://i.ibb.co/HG85GV7/introductory-video.png" alt="Introductory Video">
                 <h3>Introductory Video</h3>
                 <div class="play-button">
@@ -309,7 +345,7 @@
                 </div>
             </div>
             <!-- 1-1: Game Theory Intro - TCP Backoff -->
-            <div class="video-item" onclick="selectChapter(this); toggleWrldAssetWebImgsAndLink('-NTClaATC2FcMNu7SCWm', 'https://i.ibb.co/pfDNXSj/m-crossroads-Northwest-white.png', 'https://i.ibb.co/6w2syJ0/m-crossroads-Northwest-blue.png', 'bottom', 'https://automatopiamv.github.io/github-pages/elearning-showcase/v1/video-player/v1-2-video-1-1.html', 'Game Theory Intro - TCP Backoff');">    
+            <div class="video-item" onclick="toggleWrldAssetWebImgsAndLinkByPresets(1); selectChapter(this);"> 
                 <img src="https://i.ibb.co/P914NrZ/1-1.png" alt="Game Theory Intro - TCP Backoff">
                 <h3>1-1: Game Theory Intro - TCP Backoff</h3>
                 <div class="play-button">
@@ -319,7 +355,7 @@
                 </div>
             </div>
             <!-- 1-2: Self-Interested Agents and Utility Theory -->
-            <div class="video-item" onclick="selectChapter(this); toggleWrldAssetWebImgsAndLink('-NTCm4gfrTQrsND_bUl9', 'https://i.ibb.co/6Fv8fqy/m-southwest-arrow-white.png', 'https://i.ibb.co/dgCJYvt/m-southwest-arrow-blue.png', 'bottom', 'https://automatopiamv.github.io/github-pages/elearning-showcase/v1/video-player/v1-2-video-1-2.html', 'Self-Interested Agents and Utility Theory');">
+            <div class="video-item" onclick="toggleWrldAssetWebImgsAndLinkByPresets(2); selectChapter(this);"> 
                 <img src="https://i.ibb.co/zR4JhQk/1-2.png" alt="Self-Interested Agents and Utility Theory">
                 <h3>1-2: Self-Interested Agents and Utility Theory</h3>
                 <div class="play-button">
@@ -329,7 +365,7 @@
                 </div>
             </div>
             <!-- 1-3: Defining Games -->
-            <div class="video-item" onclick="playVideo(); selectChapter(this);">
+            <div class="video-item" onclick="toggleWrldAssetWebImgsAndLinkByPresets(3); selectChapter(this);"> 
                 <img src="https://i.ibb.co/48F6RV9/1-3.png" alt="Defining Games">
                 <h3>1-3: Defining Games</h3>
                 <div class="play-button">
@@ -339,7 +375,7 @@
                 </div>
             </div>
             <!-- 1-4: Examples of Games -->
-            <div class="video-item" onclick="playVideo(); selectChapter(this);">
+            <div class="video-item" onclick="toggleWrldAssetWebImgsAndLinkByPresets(4); selectChapter(this);"> 
                 <img src="https://i.ibb.co/Y0zbdHF/1-4.png" alt="Examples of Games">
                 <h3>1-4: Examples of Games</h3>
                 <div class="play-button">
@@ -349,7 +385,7 @@
                 </div>
             </div>
             <!-- 1-5: Nash Equilibrium Intro -->
-            <div class="video-item" onclick="playVideo(); selectChapter(this);">
+            <div class="video-item" onclick="toggleWrldAssetWebImgsAndLinkByPresets(5); selectChapter(this);"> 
                 <img src="https://i.ibb.co/XDf37cJ/1-5.png" alt="Nash Equilibrium Intro">
                 <h3>1-5: Nash Equilibrium Intro</h3>
                 <div class="play-button">
@@ -359,7 +395,7 @@
                 </div>
             </div>
             <!-- 1-6: Strategic Reasoning -->
-            <div class="video-item" onclick="playVideo(); selectChapter(this);">
+            <div class="video-item" onclick="toggleWrldAssetWebImgsAndLinkByPresets(6); selectChapter(this);"> 
                 <img src="https://i.ibb.co/rG5LjKb/1-6.png" alt="Strategic Reasoning">
                 <h3>1-6: Strategic Reasoning</h3>
                 <div class="play-button">
@@ -369,7 +405,7 @@
                 </div>
             </div>
             <!-- 1-7: Best Response and Nash Equilibrium -->
-            <div class="video-item" onclick="playVideo(); selectChapter(this);">
+            <div class="video-item" onclick="toggleWrldAssetWebImgsAndLinkByPresets(7); selectChapter(this);"> 
                 <img src="https://i.ibb.co/fQ66Ntj/1-7.png" alt="Best Response and Nash Equilibrium">
                 <h3>1-7: Best Response and Nash Equilibrium</h3>
                 <div class="play-button">
