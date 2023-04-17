@@ -279,19 +279,17 @@
           return asset;
         }
       
-        // Change Chapter object color when selected
-        function selectChapter(element) {
-            /*
-            // Deselect any previously selected chapters
-            const selectedChapters = document.querySelectorAll('.video-item.selected');
-            selectedChapters.forEach((chapter) => {
-                chapter.classList.remove('selected');
-            });
-            */
-
-            // Select the clicked chapter
-            element.classList.add('selected');
+        /**
+         * Toggle the 'selected' class on the video-item element.
+         * If the element already has the 'selected' class, remove it.
+         * If the element doesn't have the 'selected' class, add it.
+         *
+         * @param {HTMLElement} target - The video-item element.
+         */
+        function selectChapter(target) {
+          target.classList.toggle('selected');
         }
+
     </script>
 </head>
 <body>
@@ -384,10 +382,9 @@
     </div>
     <div class="bottom-banner">
         <div class="version-container"> <!-- Add this line -->
-            <span class="version">7.5.3</span>
+            <span class="version">7.5.4</span>
         </div>
         <img src="https://i.ibb.co/dKnJrKS/coursera-logo-white.png" alt="Coursera logo">
-        <i class="fas fa-robot"></i>
     </div>
 </body>
 </html>
