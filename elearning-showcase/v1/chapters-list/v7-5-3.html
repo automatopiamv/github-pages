@@ -281,11 +281,13 @@
       
         // Change Chapter object color when selected
         function selectChapter(element) {
+            /*
             // Deselect any previously selected chapters
             const selectedChapters = document.querySelectorAll('.video-item.selected');
             selectedChapters.forEach((chapter) => {
                 chapter.classList.remove('selected');
             });
+            */
 
             // Select the clicked chapter
             element.classList.add('selected');
@@ -382,7 +384,7 @@
     </div>
     <div class="bottom-banner">
         <div class="version-container"> <!-- Add this line -->
-            <span class="version">7.5.2</span>
+            <span class="version">7.5.3</span>
         </div>
         <img src="https://i.ibb.co/dKnJrKS/coursera-logo-white.png" alt="Coursera logo">
         <i class="fas fa-robot"></i>
