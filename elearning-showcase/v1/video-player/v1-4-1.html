@@ -148,9 +148,13 @@
 
           const videoURLs = [
             'https://d3c33hcgiwev3.cloudfront.net/ADoGjjchEeaCFgopl-HV3Q.processed/full/360p/index.webm?Expires=1681862400&Signature=f3BBbMDCuqdE3BPoq4HVwGLpRw5A1UzVsH~QdutSaeqQVZUiiXFHSLnGp7JJhstd8pZzDu59EQWLZBed85LZQ-Cu7DTxCmatizy~-aF8l55aGlqEy427W3J7w9vYMW5Qu10KZfUJl1SEuzEZaKOzdKiy6M031RwXs2H37jyTV24_&Key-Pair-Id=APKAJLTNE6QMUY6HBC5A',
-            'https://example.com/video2.mp4',
-            'https://example.com/video3.mp4',
-            // Add more video URLs here
+            'https://d3c33hcgiwev3.cloudfront.net/1-1-Taste-Backoff.67028900d1ea11e5bd839be21ad26129/full/360p/index.webm?Expires=1681862400&Signature=EtIslRdG~FxuV4N5fkT--MZMf7UBQQ8o5jkR6AeSJ4JkYQnSkvQ17fF~JzYqZWqTklewJBTKM8ddez1r6tVMeCsBklAScgzoIw6dDXUQBdPCjcH2iPrUaaGpFZsKjHKwNchnKSp-b07NLUGQYHOHu5ktFElt7jgJrEAdYJFyxt0_&Key-Pair-Id=APKAJLTNE6QMUY6HBC5A',
+            'https://d3c33hcgiwev3.cloudfront.net/0-2-SelfInterest.69ae6f20d1ea11e5a30f7162204407e3/full/360p/index.webm?Expires=1681862400&Signature=gKNzs1Pj8~VTPgbL7F~lbEDUlXXmB1zy2lxtBpnVoQGVF0W8P0uoOrmLGu-t4oOYiovZZqaTZ6s24j7xUDX~hSttp7hK7ek9hfkPmyBCBmfsjo7ZpGDhhqbMUQsUnuLSspB6dg7O6N5gcLDPZUgzSOfCPxDKZFz-EKVzC96JlSk_&Key-Pair-Id=APKAJLTNE6QMUY6HBC5A',
+            'https://d3c33hcgiwev3.cloudfront.net/1-3-Nash-Definitions-Matt-12-01_V4.68e2e1c0d1ea11e58a67278d56614f68/full/360p/index.webm?Expires=1681862400&Signature=T~2-t1esZMN6CjAym3jRmEXGtcasKi5B31fBetWhfdBaDZYQodiLxVR2VXQNWTSYanjRuTyJSe8bnKfH6xo~D37Okjxy3TYl8NY~D60Y00mkoFcIFKrZPMUQ4IpJLZyLy5d71gaBtCocXmSRoFRlI4NEYzVI5SafarRoSTFXQls_&Key-Pair-Id=APKAJLTNE6QMUY6HBC5A',
+            'https://d3c33hcgiwev3.cloudfront.net/1-4-Examples_V2.6ba18c90d1ea11e5a30f7162204407e3/full/360p/index.webm?Expires=1681862400&Signature=PY4qi9c0M4PB83SmxvBcsquhQwMOEeB-mdML5f6du-0MVbumJisUJjAQnzqxWa3aGw6wwadfhzFzdbkyRLUyo0096oFvhXpUYpYTSwbBTZwjIWEhDauo5YcW4DpX0a1NWIfapNArNJeemz7lh9jX1VSFuj4eGShDYwOkqcxBP1c_&Key-Pair-Id=APKAJLTNE6QMUY6HBC5A',
+            'https://d3c33hcgiwev3.cloudfront.net/1a-1-Taste-Matt-12-12-01_V2.6ab49480d1ea11e594afeb50533717ec/full/360p/index.webm?Expires=1681862400&Signature=O6xG0VW9YXCDQPJhpXfUvhF70VkNmVCokZ56lBB-cPtxE28LTzXEwMG4cqPE88jJ4FuPLTtYbqNHcQ3wBm20~pnd5H3ohztuguM8~YFro1sg3vB1QNbEkxo8seMoo0g30poc-Z8MfQUCMpB1t426aeAcUpXLxHS75sUJIyHwRSE_&Key-Pair-Id=APKAJLTNE6QMUY6HBC5A',
+            'https://d3c33hcgiwev3.cloudfront.net/1a-2-Play-Matt-12-12-01_V3.6c09c440d1ea11e59270bf5eea9519d8/full/360p/index.webm?Expires=1681862400&Signature=OL~ZY2ZESSZqVfaIhU5AsmlJAOXfCQjPslZwejlOla8keHHGPq7Kfc4F6c-V7FDezSOdLFGncSLlSzwhPqY5ojCz87l0tZydiF5k5~Iu3yZMvmREy35ADq1E2n3zpkQOQOzBD-VM8I-6sWLYC3ZHtJ7kvmwm~iq9xCpPWQXzWFs_&Key-Pair-Id=APKAJLTNE6QMUY6HBC5A',
+            'https://d3c33hcgiwev3.cloudfront.net/1a-3-BR-NE.6b2111f0d1ea11e5a30f7162204407e3/full/360p/index.webm?Expires=1681862400&Signature=b23dNNWevx~aj8PTLqZU2OKkiSl0psEAVyKFAqGU5u2ep4sNg7atsV0ktLabGUczC8V1P6XqJI8cwgq~8O33ewGg5fT3ONpdj8l2~Kt8MK2da9HZgVx9LkZfo50c3NZYri90YK1dJUkAiVuNDZzu1UMeSti-tHNseEtGr4bB1Do_&Key-Pair-Id=APKAJLTNE6QMUY6HBC5A'
           ];
 
           const imageUrls = [
