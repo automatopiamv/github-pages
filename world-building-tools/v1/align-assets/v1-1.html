@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Alignment Tool</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+		body {
+			margin: 0;
+			padding: 0;
+			background-color: #f5f5f5;
+		}
+		.header {
+			background-color: #00a5e7;
+			color: #fff;
+			height: 50px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding: 0 20px;
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			z-index: 1;
+		}
+		.header h1 {
+			margin: 0 auto;
+			text-align: center;
+		}
+		.footer {
+			background-color: #00a5e7;
+			color: #fff;
+			height: 50px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			z-index: 1;
+		}
+		.footer img {
+			max-height: 40px;
+			max-width: 100%;
+		}
+		.version {
+			padding-right: 20px;
+			margin-left: auto;
+		}
+		.container {
+			margin-top: 70px;
+			margin-bottom: 70px;
+			padding: 0 20px;
+		}
+		.item {
+			display: flex;
+			align-items: center;
+			padding: 10px 0;
+			border-bottom: 1px solid #dcdcdc;
+		}
+		.item label {
+			flex: 1;
+			margin-left: 10px;
+			font-size: 16px;
+			cursor: pointer;
+		}
+		.item input[type=checkbox] {
+			margin-right: 10px;
+			cursor: pointer;
+		}
+		.item.checked {
+			background-color: #00a5e7;
+			color: #fff;
+		}
+        #submit-button {
+            display: block;
+            margin: 0 auto;
+            margin-top: 20px;
+            background-color: #00a5e7;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Alignment Tool</h1>
+  </div>
+  <div class="container">
+    <ul id="item-list">
+    </ul>
+  </div>
+  <div class="footer">
+    <div class="version">
+      <span>Version 1.0</span>
+    </div>
+    <div class="logo">
+      <img src="https://i.ibb.co/SKmdjBz/topia-logo-white-2x.png" alt="Topia Logo">
+    </div>
+  </div>
+
+  <script>
+  const apiKey = "8db38de2-3759-45dc-b411-d806414d7000";
+  const apiEmail = "rex@topia.io";
+  const urlSlug = "rex";
+
+  /**
+   * Fetches all assets from a given Topia world.
+   * @param {string} apiKey - The Topia API key.
+   * @param {string} apiEmail - The Topia API email.
+   * @param {string} urlSlug - The URL slug of the Topia world.
+   * @returns {Promise<object[]>} - A promise that resolves to an array of assets.
+   */
+  async function getTopiaWorldAssets(apiKey, apiEmail, urlSlug) {
+    // Construct the API URL
+    const apiUrl = `https://api.topia.io/api/v1/world/${urlSlug}/assets`;
+
+    // Fetch assets from the Topia API
+    const response = await fetch(apiUrl, {
+      method: "GET",
+      headers: {
+        'Authorization': apiKey,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    // Parse the response JSON
+    const assets = await response.json();
+
+    // Log the retrieved assets and their count
+    console.log(`Retrieving All Assets for Topia World "${urlSlug}"...`);
+    console.log('Assets:', assets);
+    console.log(`${assets.length} assets detected in world "${urlSlug}".`);
+
+    return assets;
+  }
+
+  /**
+   * Populates list items on the page with assets from a Topia world and adds a submit button that updates the positions of all checked items to the greatest x position.
+   * @returns {Promise<void>} - A promise that resolves once the list items are populated.
+   */
+  async function populateListItems() {
+    try {
+      const assets = await getTopiaWorldAssets(apiKey, apiEmail, urlSlug);
+      const itemList = document.getElementById('item-list');
+
+      assets.forEach(asset => {
+        const item = document.createElement('li');
+        const checkbox = document.createElement('input');
+        const label = document.createElement('label');
+        checkbox.type = 'checkbox';
+        checkbox.id = asset.id;
+        label.for = asset.id;
+        label.innerHTML = asset.assetName;
+        item.classList.add('item');
+        item.appendChild(checkbox);
+        item.appendChild(label);
+        itemList.appendChild(item);
+      });
+
+      const submitButton = document.createElement('button');
+      submitButton.innerHTML = 'Submit';
+      submitButton.onclick = async () => {
+        const checkedItems = itemList.querySelectorAll('li.item input[type="checkbox"]:checked');
+        console.log('checkedItems',checkedItems)
+        const assetsToUpdate = [];
+
+        for (let i = 0; i < checkedItems.length; i++) {
+          const assetId = checkedItems[i].getAttribute('id');
+          const asset = assets.find(asset => asset.id === assetId);
+          assetsToUpdate.push(asset);
+        }
+
+        if (assetsToUpdate.length > 0) {
+          const maxPosX = Math.max(...assetsToUpdate.map(asset => asset.parameters.position.x));
+          await updCheckedAssetsPosition(apiKey, apiEmail, urlSlug, assetsToUpdate, maxPosX);
+        }
+      };
+
+      itemList.appendChild(submitButton);
+    } catch (error) {
+      console.error('Error fetching assets:', error);
+      // Display an error message to the user
+      alert('Error fetching assets. Please try again later.');
+    }
+  }
+    
+  /**
+   * Updates the position of checked assets in a Topia world.
+   * @param {string} apiKey - The Topia API key.
+   * @param {string} apiEmail - The Topia API email.
+   * @param {string} urlSlug - The URL slug of the Topia world.
+   * @param {object[]} assets - An array of Topia world asset objects to update.
+   * @param {number} maxPosX - The maximum x position to set for the updated assets.
+   * @returns {Promise<object[]>} - A promise that resolves to an array of updated asset objects.
+   */
+  async function updCheckedAssetsPosition(apiKey, apiEmail, urlSlug, assets, maxPosX) {
+    if (assets.length === 0) {
+      return [];
+    }
+
+    const updatedAssets = [];
+
+    for (let i = 0; i < assets.length; i++) {
+      const asset = assets[i];
+
+      const newPosition = {
+        x: maxPosX,
+        y: asset.parameters.position.y
+      };
+
+      const updatedAsset = await updWrldAssetPosition(apiKey, apiEmail, urlSlug, asset, newPosition);
+      updatedAssets.push(updatedAsset);
+    }
+
+    console.log(`Updated ${updatedAssets.length} assets.`);
+    console.log(updatedAssets);
+
+    return updatedAssets;
+  }
+
+  /**
+   * Updates the position of a single Topia world asset.
+   * @param {string} apiKey - The Topia API key.
+   * @param {string} apiEmail - The Topia API email.
+   * @param {string} urlSlug - The URL slug of the Topia world.
+   * @param {object|string} asset - The Topia world asset object or ID to update.
+   * @param {object} position - The new position to set for the asset.
+   * @param {string} [type='absolute'] - The type of position update to perform ('absolute' or 'relative').
+   * @returns {Promise<object>} - A promise that resolves to the updated asset object.
+   */
+  async function updWrldAssetPosition(apiKey, apiEmail, urlSlug, asset, position, type='absolute'){
+      if (typeof asset == "string"){
+        asset = await getTopiaWorldAssetById(apiKey, apiEmail, urlSlug, asset);
+      }
+
+      console.log(`Updating Topia World "${urlSlug}" asset "${asset.id}" position (${type}) [x=${position.x}, y=${position.y}]...`);
+
+      if (type == 'relative'){
+          position.x = asset.position.x + position.x
+          position.y = asset.position.y + position.y
+      }
+
+      const payload = position;
+      console.log(JSON.stringify(payload));
+
+      const apiUrl = `https://api.topia.io/api/world/${urlSlug}/assets/${asset.id}/set-position?email=${apiEmail}`;
+
+      // Make a PUT request to update the asset's position and return the updated asset object
+      const updAsset = await fetch(apiUrl, {
+        method: "PUT",
+        headers: {
+          'Authorization': apiKey,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      }).then(r => r.json());
+
+      console.log('updAsset', updAsset);
+
+      return updAsset;
+  }
+
+  populateListItems();
+</script>
+</body>
+</html>
