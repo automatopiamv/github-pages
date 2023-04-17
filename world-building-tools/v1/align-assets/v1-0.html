@@ -44,6 +44,10 @@
 			max-height: 40px;
 			max-width: 100%;
 		}
+		.version {
+			padding-right: 20px;
+			margin-left: auto;
+		}
 		.container {
 			margin-top: 70px;
 			margin-bottom: 70px;
@@ -71,26 +75,70 @@
 		}
 	</style>
 </head>
-<body>
+<body onload="populateListItems()">
 	<div class="header">
 		<h1>Alignment Tool</h1>
 	</div>
 	<div class="container">
-		<div class="item">
-			<input type="checkbox" id="item1">
-			<label for="item1">Item 1</label>
-		</div>
-		<div class="item">
-			<input type="checkbox" id="item2">
-			<label for="item2">Item 2</label>
-		</div>
-		<div class="item">
-			<input type="checkbox" id="item3">
-			<label for="item3">Item 3</label>
-		</div>
+		<ul id="item-list">
+		</ul>
 	</div>
 	<div class="footer">
-		<img src="https://i.ibb.co/SKmdjBz/topia-logo-white-2x.png" alt="Topia Logo">
+		<div class="version">
+			<span>Version 1.0</span>
+		</div>
+		<div class="logo">
+			<img src="https://i.ibb.co/SKmdjBz/topia-logo-white-2x.png" alt="Topia Logo">
+		</div>
 	</div>
+
+	<script>
+    const apiKey = "8db38de2-3759-45dc-b411-d806414d7000";
+    const apiEmail = "rex@topia.io";
+    const urlSlug = "rex";
+    async function getTopiaWorldAssets(apiKey, apiEmail, urlSlug) {
+		  // Construct the API URL
+		  const apiUrl = `https://api.topia.io/api/v1/world/${urlSlug}/assets`;
+
+		  // Fetch assets from the Topia API
+		  const response = await fetch(apiUrl, {
+		    method: "GET",
+		    headers: {
+		      'Authorization': apiKey,
+		      'Content-Type': 'application/json'
+		    }
+		  });
+
+		  // Parse the response JSON
+		  const assets = await response.json();
+
+		  // Log the retrieved assets and their count
+		  console.log(`Retrieving All Assets for Topia World "${urlSlug}"...`);
+		  console.log('Assets:', assets);
+		  console.log(`${assets.length} assets detected in world "${urlSlug}".`);
+
+		  return assets;
+		}
+
+		async function populateListItems() {
+
+		  const assets = await getTopiaWorldAssets(apiKey, apiEmail, urlSlug);
+
+		  const itemList = document.getElementById('item-list');
+
+		  assets.forEach(asset => {
+		    const item = document.createElement('li');
+		    const checkbox = document.createElement('input');
+		    const label = document.createElement('label');
+		    checkbox.type = 'checkbox';
+		    label.for = asset.id;
+		    label.innerHTML = asset.assetName;
+		    item.classList.add('item');
+		    item.appendChild(checkbox);
+		    item.appendChild(label);
+		    itemList.appendChild(item);
+		  });
+		}
+	</script>
 </body>
 </html>
