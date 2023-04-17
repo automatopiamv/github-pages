@@ -126,16 +126,42 @@
         <h1>EdTech Course - Video Player</h1>
     </div>
     <div class="container">
-        <video id="video-player" controls poster="https://i.ibb.co/HG85GV7/introductory-video.png" style="width:100%; max-width: 800px; border-radius: 10px;">
-            <source src="https://d3c33hcgiwev3.cloudfront.net/ADoGjjchEeaCFgopl-HV3Q.processed/full/540p/index.webm?Expires=1681776000&Signature=UhpTY4Q0RmqNdwMq5KCGJ6HtIb2yNE0RVZaSfcf0pvqqZkmaAaZbQc3eYIml9MCamn~uZ3m9HSa4EyDzo4iqNkT0o5Yvnq6yAni53zFLf1-f6p27POBmxl49oHnfCzRz1fHCQVeB9hV4JvqO0Y9eCRIMpLAaYRfRVAPFsYxqXvI_&Key-Pair-Id=APKAJLTNE6QMUY6HBC5A" type="video/mp4">
+        <video id="video-player" style="width:100%; max-width: 800px; border-radius: 10px;">
+            <source id="video-source" type="video/mp4">
             Your browser does not support the video tag.
         </video>
     </div>
     <div class="bottom-banner">
         <div class="version-container">
-            <span class="version">Version 1.2</span>
+            <span class="version">Version 1.3</span>
         </div>
         <img src="https://i.ibb.co/dKnJrKS/coursera-logo-white.png" alt="Coursera Logo">
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          const urlParams = new URLSearchParams(window.location.search);
+
+          const videoPlayer = document.getElementById('video-player');
+          const videoSource = document.getElementById('video-source');
+
+          const controls_poster = urlParams.get('controls_poster');
+          const src = urlParams.get('src');
+
+          if (controls === 'true') {
+            videoPlayer.setAttribute('controls poster', '');
+          }
+
+          if (poster) {
+            videoPlayer.setAttribute('poster', poster);
+          }
+
+          if (src) {
+            videoSource.setAttribute('src', src);
+          }
+
+          // Load the video source
+          videoPlayer.load();
+        });
+    </script>
 </body>
 </html>
