@@ -162,40 +162,29 @@
         const apiKey = "8db38de2-3759-45dc-b411-d806414d7000"
 
         /**
-         * Toggle Web Image Layer images and Asset Link
+         * Toggle Web Image Layer images and Asset Link based on the asset's current clickType
          *
          * @param {string} apiKey - The Topia API key.
          * @param {string} apiEmail - The Topia API email.
          * @param {string} urlSlug - The Topia world URL slug.
          * @param {string} assetId - The asset ID.
          * @param {string} imgURL1 - The first image URL.
-         * @param {string} imgURL2 - The second image URL, or 'reset' to clear the lastUsedImgURL and reset the behavior.
+         * @param {string} imgURL2 - The second image URL.
          * @param {string} layer - The layer to update, either 'top' or 'bottom'.
-         * @param {string} linkUrl - The new link URL.
-         * @param {string} linkTitle - The new link title.
          * @returns {Promise<Object>} - A promise that resolves to the updated world asset.
          */
-
-        async function toggleWrldAssetWebImgsAndLink(assetId, imgURL1, imgURL2, layer, linkUrl, linkTitle) {
+        async function toggleWrldAssetWebImgsAndLink(apiKey, apiEmail, urlSlug, assetId, imgURL1, imgURL2, layer, linkUrl, linkTitle) {
           console.log(`Setting Topia World ("${urlSlug}") asset "${assetId}" Web Image and Link...`);
 
-          // Check local storage for the last used image URL
-          const lastUsedImgURL = localStorage.getItem('lastUsedImgURL');
+          // Get the asset
+          const asset = await getTopiaWorldAssetById(apiKey, apiEmail, urlSlug, assetId);
+          console.log('asset', asset);
 
-          // Reset the behavior if imgURL2 is 'reset'
-          if (imgURL2 === 'reset') {
-            localStorage.removeItem('lastUsedImgURL');
-            imgURL2 = imgURL1;
-          }
-
-          // Determine which image URL to use based on the last used image URL
-          const newImgURL = lastUsedImgURL === imgURL1 ? imgURL2 : imgURL1;
-
-          // Update local storage with the new image URL
-          localStorage.setItem('lastUsedImgURL', newImgURL);
-
-          // Determine the clickType based on the new image URL
-          const newClickType = newImgURL === imgURL1 ? 'none' : 'link';
+          // Determine the clickType and newImgURL based on the current clickType
+          const currentClickType = asset.clickType || 'none'; // Treat null as 'none'
+          console.log('currentClickType',currentClickType)
+          const newClickType = currentClickType === 'none' ? 'link' : 'none';
+          const newImgURL = currentClickType === 'none' ? imgURL2 : imgURL1;
 
           const payloadImg = {
             [layer]: newImgURL
@@ -203,30 +192,54 @@
 
           const payloadLink = {
             "clickType": newClickType,
-            "clickableLink": newClickType === 'link' ? linkUrl : null,
-            "clickableLinkTitle": newClickType === 'link' ? linkTitle : null
+            "clickableLink": linkUrl,
+            "clickableLinkTitle": linkTitle
           };
 
           const apiUrlImg = `https://api.topia.io/api/world/${urlSlug}/assets/${assetId}/set-webimage-layers?email=${apiEmail}`;
           const apiUrlLink = `https://api.topia.io/api/world/${urlSlug}/assets/${assetId}/change-click-type?email=${apiEmail}`;
 
           // Update the web image layer
-          const updatedAssetImg = await fetch(apiUrlImg, {
+          await fetch(apiUrlImg, {
             method: "PUT",
             headers: { 'Authorization': apiKey, 'Content-Type': 'application/json' },
             body: JSON.stringify(payloadImg)
           }).then(r => r.json());
 
           // Update the asset link
-          const updatedAssetLink = await fetch(apiUrlLink, {
+          const updatedAsset = await fetch(apiUrlLink, {
             method: "PUT",
             headers: { 'Authorization': apiKey, 'Content-Type': 'application/json' },
             body: JSON.stringify(payloadLink)
           }).then(r => r.json());
 
-          console.log('updatedAssetImg', updatedAssetImg);
-          console.log('updatedAssetLink', updatedAssetLink);
-          return { updatedAssetImg, updatedAssetLink };
+          //console.log('updatedAssetImg', updatedAssetImg);
+          console.log('updatedAsset', updatedAsset);
+          return { updatedAsset };
+        }
+
+        /**
+         * Get a single Topia world asset by ID.
+         *
+         * @param {string} apiKey - The Topia API key.
+         * @param {string} apiEmail - The Topia API email.
+         * @param {string} urlSlug - The Topia world URL slug.
+         * @param {string} assetId - The Topia world asset ID.
+         * @returns {Promise<Object>} - A promise that resolves to the retrieved asset.
+         */
+        async function getTopiaWorldAssetById(apiKey, apiEmail, urlSlug, assetId) {
+          console.log(`Retrieving Asset "${assetId}" from Topia World "${urlSlug}"...`);
+
+          const apiUrl = `https://api.topia.io/api/v1/world/${urlSlug}/assets/${assetId}?email=${apiEmail}`;
+
+          const asset = await fetch(apiUrl, {
+            method: "GET",
+            headers: { 'Authorization': apiKey, 'Content-Type': 'application/json' }
+          }).then(r => r.json());
+
+          console.log('asset', asset);
+
+          return asset;
         }
       
         // Change Chapter object color when selected
