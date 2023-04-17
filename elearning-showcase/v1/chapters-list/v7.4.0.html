@@ -162,111 +162,72 @@
         const apiKey = "8db38de2-3759-45dc-b411-d806414d7000"
 
         /**
-         * Drop a Topia Scene in World.
+         * Toggle Web Image Layer images and Asset Link
          *
-         * @param {string} sceneId - The scene ID to be dropped.
-         * @param {Object} dropPos - The position coordinates where the scene will be dropped.
-         * @param {number} dropPos.x - The x-coordinate of the position.
-         * @param {number} dropPos.y - The y-coordinate of the position.
-         * @param {string} suffix - The asset suffix.
+         * @param {string} apiKey - The Topia API key.
+         * @param {string} apiEmail - The Topia API email.
+         * @param {string} urlSlug - The Topia world URL slug.
+         * @param {string} assetId - The asset ID.
+         * @param {string} imgURL1 - The first image URL.
+         * @param {string} imgURL2 - The second image URL, or 'reset' to clear the lastUsedImgURL and reset the behavior.
+         * @param {string} layer - The layer to update, either 'top' or 'bottom'.
+         * @param {string} linkUrl - The new link URL.
+         * @param {string} linkTitle - The new link title.
+         * @returns {Promise<Object>} - A promise that resolves to the updated world asset.
          */
-        async function dropTopiaSceneByCoords(sceneId, dropPos, suffix) {
-          console.log(`Dropping Scene "${sceneId}" into Topia World (${urlSlug})...`);
 
-          const payload = {
-            sceneId: sceneId,
-            position: { x: dropPos.x, y: dropPos.y },
-            assetSuffix: suffix,
+        async function toggleWrldAssetWebImgsAndLink(assetId, imgURL1, imgURL2, layer, linkUrl, linkTitle) {
+          console.log(`Setting Topia World ("${urlSlug}") asset "${assetId}" Web Image and Link...`);
+
+          // Check local storage for the last used image URL
+          const lastUsedImgURL = localStorage.getItem('lastUsedImgURL');
+
+          // Reset the behavior if imgURL2 is 'reset'
+          if (imgURL2 === 'reset') {
+            localStorage.removeItem('lastUsedImgURL');
+            imgURL2 = imgURL1;
+          }
+
+          // Determine which image URL to use based on the last used image URL
+          const newImgURL = lastUsedImgURL === imgURL1 ? imgURL2 : imgURL1;
+
+          // Update local storage with the new image URL
+          localStorage.setItem('lastUsedImgURL', newImgURL);
+
+          // Determine the clickType based on the new image URL
+          const newClickType = newImgURL === imgURL1 ? 'none' : 'link';
+
+          const payloadImg = {
+            [layer]: newImgURL
           };
 
-          const apiUrl = `https://api.topia.io/api/world/${urlSlug}/drop-scene?email=${apiEmail}`;
+          const payloadLink = {
+            "clickType": newClickType,
+            "clickableLink": newClickType === 'link' ? linkUrl : null,
+            "clickableLinkTitle": newClickType === 'link' ? linkTitle : null
+          };
 
-          try {
-            const response = await fetch(apiUrl, {
-              method: "POST",
-              headers: { Authorization: apiKey, "Content-Type": "application/json" },
-              body: JSON.stringify(payload),
-            });
+          const apiUrlImg = `https://api.topia.io/api/world/${urlSlug}/assets/${assetId}/set-webimage-layers?email=${apiEmail}`;
+          const apiUrlLink = `https://api.topia.io/api/world/${urlSlug}/assets/${assetId}/change-click-type?email=${apiEmail}`;
 
-            const resp = response.status === 200
-              ? { success: true, message: `Scene "${sceneId}" successfully dropped into Topia World "${urlSlug}".` }
-              : { success: false, message: response.statusText };
-
-            console.log("data", response);
-            return resp;
-          } catch (error) {
-            console.error("Error occurred:", error);
-            return { success: false, message: error.message };
-          }
-        }
-
-        /**
-         * Retrieve all assets in a Topia World with the specified suffix and remove them.
-         *
-         * @param {string} suffix - The suffix of the assets to remove.
-         */
-        async function removeTopiaWorldAssetsBySuffix(suffix) {
-          console.log(`Retrieving All Assets for Topia World "${urlSlug}" with suffix "${suffix}"...`);
-
-          const apiUrl = `https://api.topia.io/api/world/${urlSlug}/assets?email=${apiEmail}`;
-          const assets = await fetch(apiUrl, {
-            method: "GET",
-            headers: { Authorization: apiKey, "Content-Type": "application/json" },
+          // Update the web image layer
+          const updatedAssetImg = await fetch(apiUrlImg, {
+            method: "PUT",
+            headers: { 'Authorization': apiKey, 'Content-Type': 'application/json' },
+            body: JSON.stringify(payloadImg)
           }).then(r => r.json());
 
-          console.log("assets", assets);
-          console.log(`${assets.length} assets detected in world "${urlSlug}".`);
+          // Update the asset link
+          const updatedAssetLink = await fetch(apiUrlLink, {
+            method: "PUT",
+            headers: { 'Authorization': apiKey, 'Content-Type': 'application/json' },
+            body: JSON.stringify(payloadLink)
+          }).then(r => r.json());
 
-          const suffixAssets = getKvArrayObjsFromValue(assets, "uniqueName", suffix);
-
-          // Loop through suffixAssets and remove each one.
-          for (const asset of suffixAssets) {
-            await rmAssetFromWorld(asset.id);
-          }
-
-          /**
-           * Find all objects in an array with a specified key-value containing a suffix.
-           *
-           * @param {Object[]} objArray - The array of objects to search.
-           * @param {string} key - The key of the object to match.
-           * @param {string} suffix - The suffix to find in the value.
-           * @returns {Object[]} - The filtered array of objects.
-           */
-          function getKvArrayObjsFromValue(objArray, key, suffix) {
-            return objArray.reduce((accumulator, element) => {
-              if (!element[key]) {
-                return accumulator;
-              }
-
-              if (element[key].endsWith(suffix)) {
-                return accumulator.concat(element);
-              }
-
-              return accumulator;
-            }, []);
-          }
-
-          /**
-           * Remove a single asset from a Topia World.
-           *
-           * @param {string} assetId - The ID of the asset to remove.
-           * @returns {Promise<Object>} - The API success response.
-           */
-          async function rmAssetFromWorld(assetId) {
-            console.log(`Removing Asset "${assetId}" from Topia World "${urlSlug}"...`);
-
-            const apiUrl = `https://api.topia.io/api/world/${urlSlug}/assets/${assetId}?email=${apiEmail}`;
-
-            const apiSuccess = await fetch(apiUrl, {
-              method: "DELETE",
-              headers: { Authorization: apiKey, "Content-Type": "application/json" },
-            }).then(r => r.json());
-
-            console.log("apiSuccess", apiSuccess);
-            return apiSuccess;
-          }
+          console.log('updatedAssetImg', updatedAssetImg);
+          console.log('updatedAssetLink', updatedAssetLink);
+          return { updatedAssetImg, updatedAssetLink };
         }
-
       
         // Change Chapter object color when selected
         function selectChapter(element) {
