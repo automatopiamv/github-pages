@@ -173,7 +173,7 @@
          * @param {string} layer - The layer to update, either 'top' or 'bottom'.
          * @returns {Promise<Object>} - A promise that resolves to the updated world asset.
          */
-        async function toggleWrldAssetWebImgsAndLink(apiKey, apiEmail, urlSlug, assetId, imgURL1, imgURL2, layer, linkUrl, linkTitle) {
+        async function toggleWrldAssetWebImgsAndLink(assetId, imgURL1, imgURL2, layer, linkUrl, linkTitle) {
           console.log(`Setting Topia World ("${urlSlug}") asset "${assetId}" Web Image and Link...`);
 
           // Get the asset
