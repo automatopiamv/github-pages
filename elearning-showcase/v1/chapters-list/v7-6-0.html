@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EdTech Course - Video Chapters</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css" integrity="sha512-10/jx2EXwxxWqCLX/hHth/vu2KY3jCF70dCQB8TSgNjbCVAC/8vai53GfMDrO2Emgwccf2pJqxct9ehpzG+MTw==" crossorigin="anonymous"/>
+    <style>
+        html, body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f0f0;
+            background-image: url('https://i.ibb.co/Htx8Qbf/robot-tile-background-v2.png');
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            padding-top: calc(80px + 20px); /* Adjust the top padding based on the header banner height and desired gap */
+            min-height: calc(100% - 140px); /* Exclude header and footer height */
+        }
+
+        h1 {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .video-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+            width: 100%;
+        }
+
+        .video-item {
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 100%;
+            max-width: 240px;
+            position: relative;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .video-item:hover {
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .video-item img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .video-item h3 {
+            margin: 20px 0;
+        }
+
+        .video-item .play-button {
+            width: 60px;
+            height: 60px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            color: #333;
+            transition: transform 0.2s;
+        }
+                
+         .video-item:hover .play-button {
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+        
+        .video-item:active .play-button {
+            transform: translate(-50%, -50%) scale(0.9);
+        }
+        
+        /* Selected chapter styling */
+        .video-item.selected {
+            background-color: #003B8B;
+            color: #ffffff;
+        }
+
+        .top-banner {
+            position: fixed;
+            left: 0;
+            right: 0;
+            background-color: #0056D2; /* Coursera brand color */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            z-index: 1000;
+            color: #ffffff;
+            box-sizing: border-box;
+        }
+        
+        h1 {
+            margin: 0;
+            text-align: center;
+            line-height: 1.3;
+            font-size: 24px;
+            font-weight: 700;
+            white-space: normal;
+            word-wrap: break-word;
+        }
+
+        .bottom-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #0056D2; /* Coursera brand color */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 60px;
+            z-index: 1000;
+            padding: 0 20px;
+        }
+
+        .bottom-banner img {
+            height: 30px;
+            width: auto;
+        }
+        
+        .bottom-banner .version {
+            color: #ffffff;
+            font-size: 14px;
+        }
+        
+        .version-container {
+            position: absolute;
+            left: 20px;
+        }
+
+        .version {
+            color: white;
+        }
+    </style>
+    <script>
+        // Script constants
+        const urlSlug = "elearning-showcase"
+        const apiEmail = "rex@topia.io"
+        const apiKey = "8db38de2-3759-45dc-b411-d806414d7000"
+
+        // Check Chapter asset states upon page open
+        document.addEventListener('DOMContentLoaded', updateChaptersState);
+
+        /**
+         * Update the state of video chapters based on their associated assets' clickType property.
+         * If clickType is null, display the default status.
+         * If clickType is 'link', display the 'selected' state.
+         */
+        async function updateChaptersState() {
+
+          // An array of asset IDs associated with each video chapter
+          const assetIds = [
+            '-NTCkdeR86BgaKu-UGVs',
+            '-NTClaATC2FcMNu7SCWm',
+            '-NTCm4gfrTQrsND_bUl9',
+            // Add the rest of the asset IDs here
+          ];
+
+          // Get all video-item elements in the page
+          const videoItems = document.querySelectorAll('.video-item');
+
+          // Iterate through each asset ID
+          for (let i = 0; i < assetIds.length; i++) {
+            // Get the asset data using the getTopiaWorldAssetById function
+            const asset = await getTopiaWorldAssetById(apiKey, apiEmail, urlSlug, assetIds[i]);
+
+            // Get the clickType property from the asset
+            const clickType = asset.clickType;
+
+            // If clickType is 'link', add the 'selected' class to the corresponding video-item
+            if (clickType === 'link') {
+              videoItems[i].classList.add('selected');
+            }
+          }
+        }
+
+        /**
+         * Toggle Web Image Layer images and Asset Link based on the asset's current clickType
+         *
+         * @param {string} apiKey - The Topia API key.
+         * @param {string} apiEmail - The Topia API email.
+         * @param {string} urlSlug - The Topia world URL slug.
+         * @param {string} assetId - The asset ID.
+         * @param {string} imgURL1 - The first image URL.
+         * @param {string} imgURL2 - The second image URL.
+         * @param {string} layer - The layer to update, either 'top' or 'bottom'.
+         * @returns {Promise<Object>} - A promise that resolves to the updated world asset.
+         */
+        async function toggleWrldAssetWebImgsAndLink(assetId, imgURL1, imgURL2, layer, linkUrl, linkTitle) {
+          console.log(`Setting Topia World ("${urlSlug}") asset "${assetId}" Web Image and Link...`);
+
+          // Get the asset
+          const asset = await getTopiaWorldAssetById(apiKey, apiEmail, urlSlug, assetId);
+          console.log('asset', asset);
+
+          // Determine the clickType and newImgURL based on the current clickType
+          const currentClickType = asset.clickType || 'none'; // Treat null as 'none'
+          console.log('currentClickType',currentClickType)
+          const newClickType = currentClickType === 'none' ? 'link' : 'none';
+          const newImgURL = currentClickType === 'none' ? imgURL2 : imgURL1;
+
+          const payloadImg = {
+            [layer]: newImgURL
+          };
+
+          const payloadLink = {
+            "clickType": newClickType,
+            "clickableLink": linkUrl,
+            "clickableLinkTitle": linkTitle
+          };
+
+          const apiUrlImg = `https://api.topia.io/api/world/${urlSlug}/assets/${assetId}/set-webimage-layers?email=${apiEmail}`;
+          const apiUrlLink = `https://api.topia.io/api/world/${urlSlug}/assets/${assetId}/change-click-type?email=${apiEmail}`;
+
+          // Update the web image layer
+          await fetch(apiUrlImg, {
+            method: "PUT",
+            headers: { 'Authorization': apiKey, 'Content-Type': 'application/json' },
+            body: JSON.stringify(payloadImg)
+          }).then(r => r.json());
+
+          // Update the asset link
+          const updatedAsset = await fetch(apiUrlLink, {
+            method: "PUT",
+            headers: { 'Authorization': apiKey, 'Content-Type': 'application/json' },
+            body: JSON.stringify(payloadLink)
+          }).then(r => r.json());
+
+          //console.log('updatedAssetImg', updatedAssetImg);
+          console.log('updatedAsset', updatedAsset);
+          return { updatedAsset };
+        }
+
+        /**
+         * Get a single Topia world asset by ID.
+         *
+         * @param {string} apiKey - The Topia API key.
+         * @param {string} apiEmail - The Topia API email.
+         * @param {string} urlSlug - The Topia world URL slug.
+         * @param {string} assetId - The Topia world asset ID.
+         * @returns {Promise<Object>} - A promise that resolves to the retrieved asset.
+         */
+        async function getTopiaWorldAssetById(apiKey, apiEmail, urlSlug, assetId) {
+          console.log(`Retrieving Asset "${assetId}" from Topia World "${urlSlug}"...`);
+
+          const apiUrl = `https://api.topia.io/api/v1/world/${urlSlug}/assets/${assetId}?email=${apiEmail}`;
+
+          const asset = await fetch(apiUrl, {
+            method: "GET",
+            headers: { 'Authorization': apiKey, 'Content-Type': 'application/json' }
+          }).then(r => r.json());
+
+          console.log('asset', asset);
+
+          return asset;
+        }
+      
+        /**
+         * Toggle the 'selected' class on the video-item element.
+         * If the element already has the 'selected' class, remove it.
+         * If the element doesn't have the 'selected' class, add it.
+         *
+         * @param {HTMLElement} target - The video-item element.
+         */
+        function selectChapter(target) {
+          target.classList.toggle('selected');
+        }
+
+    </script>
+</head>
+<body>
+    <div class="top-banner">
+        <h1>EdTech Course - Video Chapters</h1>
+    </div>
+    <div class="container">
+        <div class="video-list">
+            <!-- Introductory Video -->
+            <div class="video-item" onclick="selectChapter(this); toggleWrldAssetWebImgsAndLink('-NTCkdeR86BgaKu-UGVs', 'https://i.ibb.co/6Fv8fqy/m-southwest-arrow-white.png', 'https://i.ibb.co/dgCJYvt/m-southwest-arrow-blue.png', 'bottom', 'https://automatopiamv.github.io/github-pages/elearning-showcase/v1/video-player/v1-2.html', 'Introductory Video');">    
+                <img src="https://i.ibb.co/HG85GV7/introductory-video.png" alt="Introductory Video">
+                <h3>Introductory Video</h3>
+                <div class="play-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                </div>
+            </div>
+            <!-- 1-1: Game Theory Intro - TCP Backoff -->
+            <div class="video-item" onclick="selectChapter(this); toggleWrldAssetWebImgsAndLink('-NTClaATC2FcMNu7SCWm', 'https://i.ibb.co/pfDNXSj/m-crossroads-Northwest-white.png', 'https://i.ibb.co/6w2syJ0/m-crossroads-Northwest-blue.png', 'bottom', 'https://automatopiamv.github.io/github-pages/elearning-showcase/v1/video-player/v1-2-video-1-1.html', 'Game Theory Intro - TCP Backoff');">    
+                <img src="https://i.ibb.co/P914NrZ/1-1.png" alt="Game Theory Intro - TCP Backoff">
+                <h3>1-1: Game Theory Intro - TCP Backoff</h3>
+                <div class="play-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                </div>
+            </div>
+            <!-- 1-2: Self-Interested Agents and Utility Theory -->
+            <div class="video-item" onclick="selectChapter(this); toggleWrldAssetWebImgsAndLink('-NTCm4gfrTQrsND_bUl9', 'https://i.ibb.co/6Fv8fqy/m-southwest-arrow-white.png', 'https://i.ibb.co/dgCJYvt/m-southwest-arrow-blue.png', 'bottom', 'https://automatopiamv.github.io/github-pages/elearning-showcase/v1/video-player/v1-2-video-1-2.html', 'Self-Interested Agents and Utility Theory');">
+                <img src="https://i.ibb.co/zR4JhQk/1-2.png" alt="Self-Interested Agents and Utility Theory">
+                <h3>1-2: Self-Interested Agents and Utility Theory</h3>
+                <div class="play-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                </div>
+            </div>
+            <!-- 1-3: Defining Games -->
+            <div class="video-item" onclick="playVideo(); selectChapter(this);">
+                <img src="https://i.ibb.co/48F6RV9/1-3.png" alt="Defining Games">
+                <h3>1-3: Defining Games</h3>
+                <div class="play-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                </div>
+            </div>
+            <!-- 1-4: Examples of Games -->
+            <div class="video-item" onclick="playVideo(); selectChapter(this);">
+                <img src="https://i.ibb.co/Y0zbdHF/1-4.png" alt="Examples of Games">
+                <h3>1-4: Examples of Games</h3>
+                <div class="play-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                </div>
+            </div>
+            <!-- 1-5: Nash Equilibrium Intro -->
+            <div class="video-item" onclick="playVideo(); selectChapter(this);">
+                <img src="https://i.ibb.co/XDf37cJ/1-5.png" alt="Nash Equilibrium Intro">
+                <h3>1-5: Nash Equilibrium Intro</h3>
+                <div class="play-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                </div>
+            </div>
+            <!-- 1-6: Strategic Reasoning -->
+            <div class="video-item" onclick="playVideo(); selectChapter(this);">
+                <img src="https://i.ibb.co/rG5LjKb/1-6.png" alt="Strategic Reasoning">
+                <h3>1-6: Strategic Reasoning</h3>
+                <div class="play-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                </div>
+            </div>
+            <!-- 1-7: Best Response and Nash Equilibrium -->
+            <div class="video-item" onclick="playVideo(); selectChapter(this);">
+                <img src="https://i.ibb.co/fQ66Ntj/1-7.png" alt="Best Response and Nash Equilibrium">
+                <h3>1-7: Best Response and Nash Equilibrium</h3>
+                <div class="play-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bottom-banner">
+        <div class="version-container"> <!-- Add this line -->
+            <span class="version">7.6.0</span>
+        </div>
+        <img src="https://i.ibb.co/dKnJrKS/coursera-logo-white.png" alt="Coursera logo">
+    </div>
+</body>
+</html>
