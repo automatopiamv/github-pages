@@ -158,9 +158,8 @@
 </body>
 <script>
   document.getElementById("submit-button").addEventListener("click", function() {
-    const input = document.querySelector('input[type="text"]');
-    const inputValue = input.value.toLowerCase();
-    if (inputValue === "dog") {
+    var input = document.querySelector("input[type=text]");
+    if (input.value.toLowerCase() === "dog") {
       window.location.href = "../success/v1-0.html";
     } else {
       window.location.href = "../no-success/v1-0.html";
