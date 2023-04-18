@@ -8,11 +8,11 @@
     .header {
       background-color: #1bc0de;
       color: #fff;
-      height: 50px;
+      height: auto;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 0 20px;
+      padding: 20px;
       position: fixed;
       top: 0;
       left: 0;
@@ -101,6 +101,28 @@
         max-height: 40px;
       }
     }
+
+    .text-field-container {
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      height: calc(100vh - 280px);
+    }
+
+    .try-again-button {
+      display: inline-block; 
+      background-color: #0d5ba5; 
+      border: none; 
+      color: white; 
+      padding: 20px 40px; 
+      text-align: center; 
+      text-decoration: none; 
+      font-size: 2.5em; 
+      font-family: sans-serif; 
+      border-radius: 5px; 
+      cursor: pointer;
+      margin-bottom: 60px;
+    }
   </style>
 </head>
 <body>
@@ -114,7 +136,7 @@
     <p style="text-align: center; font-size: 3em; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
       <script>
         const phrases = [
-          "Nice try! Check the trash items again for clues.",
+        	"Nice try! Check the trash items again for clues.",
           "Oops, not quite! Keep looking for clues!",
           "Almost there! Keep searching for clues!",
           "You're getting closer! Keep searching for clues!",
@@ -127,7 +149,7 @@
     </p>
   </div>
   <div class="text-field-container" style="display: flex; justify-content: center; margin-top: 40px; margin-bottom: 50px;">
-    <a href="https://automatopiamv.github.io/github-pages/stride/scaveger-hunt/main/v1-4.html" target="_blank" style="display: inline-block; background-color: #0d5ba5; border: none; color: white; padding: 20px 40px; text-align: center; text-decoration: none; font-size: 2.5em; font-family: sans-serif; border-radius: 5px; cursor: pointer;">Try Again</a>
+    <a href="https://automatopiamv.github.io/github-pages/stride/scaveger-hunt/main/v1-4.html" target="_blank" style="display: inline-block; background-color: #0d5ba5; border: none; color: white; padding: 20px 40px; text-align: center; text-decoration: none; font-size: 2.5em; font-family: sans-serif; border-radius: 5px; cursor: pointer; margin-bottom: 60px;">Try Again</a>
   </div>
   <div class="footer">
     <div class="version">
