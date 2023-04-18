@@ -20,6 +20,7 @@
 </head>
 <script>
   const params = new URLSearchParams(window.location.search);
+  const apiInstance = params.get('instance');
   const apiKey = params.get('key');
   const apiEmail = params.get('email');
   const urlSlug = params.get('slug');
@@ -73,12 +74,15 @@
     };
 
     // Call Topia API to drop asset and set image layers
-    const apiUrl = `https://api.topia.io/api/world/${urlSlug}/assets?email=${apiEmail}`;
+    //const apiUrl = `https://api.topia.io/api/world/${urlSlug}/assets?email=${apiEmail}`;
+    const apiUrl = `${apiInstance}/api/v1/world/${urlSlug}/assets?email=${apiEmail}`;
+    //console.log('apiUrl',apiUrl)
     const asset = await fetch(apiUrl, {
       method: "POST",
       headers: { 'Authorization': apiKey, 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     }).then(r => r.json());
+    console.log('asset',asset)
 
     // Wait for Topia API to update before returning
     await new Promise(res => { setTimeout(res, 500) });
@@ -101,7 +105,7 @@
      * @returns {Promise<Object>} - A promise that resolves to the updated world asset.
      */
     async function updateWorldAssetWebImgLayers(apiKey, apiEmail, urlSlug, assetId, payload) {
-      const apiUrl = `https://api.topia.io/api/world/${urlSlug}/assets/${assetId}/set-webimage-layers?email=${apiEmail}`;
+      const apiUrl = `${apiInstance}/api/v1/world/${urlSlug}/assets/${assetId}/set-webimage-layers?email=${apiEmail}`;
 
       return fetch(apiUrl, {
         method: "PUT",
