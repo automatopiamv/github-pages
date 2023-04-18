@@ -157,18 +157,19 @@
   </div>
 </body>
 <script>
-  const key = '8db38de2-3759-45dc-b411-d806414d7000';
-  const email = 'rex@topia.io';
-  const boundsUL = [0, 0];
-  const boundsLR = [1000, 1000];
-  const word = 'panda';
+  const urlParams = new URLSearchParams(window.location.search);
+  const key = urlParams.get('key');
+  const email = urlParams.get('email');
+  const boundsUL = urlParams.get('boundsUL');
+  const boundsLR = urlParams.get('boundsLR');
+  const word = urlParams.get('word');
 
   document.getElementById("submit-button").addEventListener("click", function() {
     var input = document.querySelector("input[type=text]");
     if (input.value.toLowerCase() === word) {
-      window.location.href = `../success/v1-0.html?key=${key}&email=${email}&boundsUL=${boundsUL}&boundsLR=${boundsLR}`;
+      window.location.href = "../success/v1-0.html?key=" + key + "&email=" + email + "&boundsUL=" + boundsUL + "&boundsLR=" + boundsLR;
     } else {
-      window.location.href = `../no-success/v1-0.html?key=${key}&email=${email}&boundsUL=${boundsUL}&boundsLR=${boundsLR}`;
+      window.location.href = "../no-success/v1-0.html?key=" + key + "&email=" + email + "&boundsUL=" + boundsUL + "&boundsLR=" + boundsLR;
     }
   });
 </script>
