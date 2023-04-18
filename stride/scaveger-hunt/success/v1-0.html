@@ -1,1 +1,137 @@
-<>
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Congratulations!</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+		body {
+			font-size: 24px;
+			text-align: center;
+			margin: 0;
+			padding: 20px;
+		}
+		
+		@media only screen and (min-width: 600px) {
+			body {
+				font-size: 32px;
+			}
+		}
+	</style>
+</head>
+<script>
+  window.addEventListener("load", function() {
+    const apiKey = '8db38de2-3759-45dc-b411-d806414d7000';
+    const apiEmail = 'rex@topia.io';
+    const urlSlug = 'rex';
+
+    const dropBoundsUL = [0, 0];
+    const dropBoundsLR = [1000, 1000];
+    const imgUrls = [
+      "https://i.ibb.co/yhVVcBF/2.png",
+      "https://i.ibb.co/31W1Tcv/1.png",
+      "https://i.ibb.co/0ywthHX/3.png",
+      "https://i.ibb.co/hyrQNN0/4.png",
+      "https://i.ibb.co/rkN18z8/5.png",
+      "https://i.ibb.co/MgpFZgG/6.png",
+      "https://i.ibb.co/hf9wjmG/7.png",
+      "https://i.ibb.co/dDfMLhf/8.png",
+      "https://i.ibb.co/cDbsjbd/9.png",
+      "https://i.ibb.co/0yvWjF7/10.png",
+      "https://i.ibb.co/wJ6LFXG/11.png",
+      "https://i.ibb.co/CJRhGSY/12.png",
+      "https://i.ibb.co/vjH1rW3/13.png",
+      "https://i.ibb.co/f9wdW4p/14.png"
+    ];
+    const layer = "top";
+    const uniqueName = "my-asset";
+
+    dropWebImgLayerAssetInWorldRand(apiKey, apiEmail, urlSlug, imgUrls, layer, dropBoundsUL, dropBoundsLR, uniqueName)
+      .then(asset => console.log(`Asset dropped at (${asset.position.x}, ${asset.position.y}) with id ${asset.id}`))
+      .catch(error => console.error(error.stack));
+  });
+
+  /**
+   * Drop a single Web Image Layer Asset in a random position within a constrained boundary in a Topia world.
+   *
+   * @param {string} apiKey - The Topia API key.
+   * @param {string} apiEmail - The Topia API email.
+   * @param {string} urlSlug - The Topia world URL slug.
+   * @param {string[]} imgUrls - Array of image URLs to randomly choose from.
+   * @param {string} layer - The layer to apply the image to.
+   * @param {number[]} [boundaryCoords=[[0,0], [100,100]]] - The boundary coordinates [[x1, y1], [x2, y2]] (optional).
+   * @param {string} [uniqueName] - Optional unique name for the asset.
+   * @returns {Promise<Object>} - A promise that resolves to the updated world asset.
+   */
+  async function dropWebImgLayerAssetInWorldRand(apiKey, apiEmail, urlSlug, imgUrls, layer, dropBoundsUL = [0, 0], dropBoundsLR = [0, 0], uniqueName = null) {
+    // Create payload for asset drop
+    const payload = {
+      "assetId": "webImageAsset",
+      "position": {
+        "x": getRandomIntInclusive(dropBoundsUL[0], dropBoundsLR[0]),
+        "y": getRandomIntInclusive(dropBoundsUL[1], dropBoundsLR[1])
+      },
+      "uniqueName": uniqueName
+    };
+
+    // Choose a random image URL and create imgLayers object for Topia API
+    const randomImgUrl = imgUrls[Math.floor(Math.random() * imgUrls.length)];
+    const imgLayers = {
+      [layer]: randomImgUrl
+    };
+
+    // Call Topia API to drop asset and set image layers
+    const apiUrl = `https://api.topia.io/api/world/${urlSlug}/assets?email=${apiEmail}`;
+    const asset = await fetch(apiUrl, {
+      method: "POST",
+      headers: { 'Authorization': apiKey, 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(r => r.json());
+
+    // Wait for Topia API to update before returning
+    await new Promise(res => { setTimeout(res, 500) });
+
+    // Update image layers if specified, otherwise return asset
+    if (Object.keys(imgLayers).length !== 0) {
+      return updateWorldAssetWebImgLayers(apiKey, apiEmail, urlSlug, asset.id, imgLayers);
+    } else {
+      return asset;
+    }
+
+    /**
+     * Update Topia world asset Web Image Layers.
+     *
+     * @param {string} apiKey - The Topia API key.
+     * @param {string} apiEmail - The Topia API email.
+     * @param {string} urlSlug - The Topia world URL slug.
+     * @param {string} assetId - The Topia world asset ID.
+     * @param {Object} payload - The payload containing the image layers.
+     * @returns {Promise<Object>} - A promise that resolves to the updated world asset.
+     */
+    async function updateWorldAssetWebImgLayers(apiKey, apiEmail, urlSlug, assetId, payload) {
+      const apiUrl = `https://api.topia.io/api/world/${urlSlug}/assets/${assetId}/set-webimage-layers?email=${apiEmail}`;
+
+      return fetch(apiUrl, {
+        method: "PUT",
+        headers: { 'Authorization': apiKey, 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).then(r => r.json());
+    }
+  }
+
+  /**
+   * Returns a random integer between the specified values, inclusive.
+   *
+   * @param {number} min - The minimum value of the random integer (inclusive).
+   * @param {number} max - The maximum value of the random integer (inclusive).
+   * @returns {number} - A random integer between the specified values (inclusive).
+   */
+  function getRandomIntInclusive(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  }
+</script>
+<body>
+	<h1>Congrats!</h1>
+</body>
+</html>
