@@ -158,17 +158,12 @@
 </body>
 <script>
   const urlParams = new URLSearchParams(window.location.search);
-  const key = urlParams.get('key');
-  const email = urlParams.get('email');
-  const slug = urlParams.get('slug');
-  const boundsUL = urlParams.get('boundsUL');
-  const boundsLR = urlParams.get('boundsLR');
   const word = urlParams.get('word');
 
   document.getElementById("submit-button").addEventListener("click", function() {
     var input = document.querySelector("input[type=text]");
     if (input.value.toLowerCase() === word) {
-      window.location.href = "../success/v1-0.html?key=" + key + "&email=" + email + "&slug=" + slug + "&boundsUL=" + JSON.stringify(boundsUL) + "&boundsLR=" + JSON.stringify(boundsLR);
+      window.location.href = "../success/v1-0.html?key=" + urlParams.get('key') + "&email=" + urlParams.get('email') + "&slug=" + urlParams.get('slug') + "&boundsUL=" + urlParams.get('boundsUL') + "&boundsLR=" + urlParams.get('boundsLR');
     } else {
       window.location.href = "../no-success/v1-0.html"
     }
