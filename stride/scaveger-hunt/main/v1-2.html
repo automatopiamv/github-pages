@@ -168,7 +168,7 @@
   document.getElementById("submit-button").addEventListener("click", function() {
     var input = document.querySelector("input[type=text]");
     if (input.value.toLowerCase() === word) {
-      window.location.href = "../success/v1-0.html?key=" + key + "&email=" + email + "&slug=" + slug + "&boundsUL=" + boundsUL + "&boundsLR=" + boundsLR;
+      window.location.href = "../success/v1-0.html?key=" + key + "&email=" + email + "&slug=" + slug + "&boundsUL=" + JSON.stringify(boundsUL) + "&boundsLR=" + JSON.stringify(boundsLR);
     } else {
       window.location.href = "../no-success/v1-0.html"
     }
