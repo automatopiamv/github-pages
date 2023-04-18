@@ -19,13 +19,14 @@
 	</style>
 </head>
 <script>
-  window.addEventListener("load", function() {
-    const apiKey = '8db38de2-3759-45dc-b411-d806414d7000';
-    const apiEmail = 'rex@topia.io';
-    const urlSlug = 'rex';
+  const params = new URLSearchParams(window.location.search);
+  const apiKey = params.get('key');
+  const apiEmail = params.get('email');
+  const urlSlug = params.get('slug');
+  const dropBoundsUL = JSON.parse(params.get('dropBoundsUL'));
+  const dropBoundsLR = JSON.parse(params.get('dropBoundsLR'));
 
-    const dropBoundsUL = [0, 0];
-    const dropBoundsLR = [1000, 1000];
+  window.addEventListener("load", function() {
     const imgUrls = [
       "https://i.ibb.co/WDdXQJX/IMG-4894-0000s-0001-From-selection.png",
       "https://i.ibb.co/k2KgqrL/IMG-4894-0000s-0000-From-selection.png",
