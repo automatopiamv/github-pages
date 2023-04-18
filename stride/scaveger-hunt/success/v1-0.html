@@ -23,8 +23,8 @@
   const apiKey = params.get('key');
   const apiEmail = params.get('email');
   const urlSlug = params.get('slug');
-  const dropBoundsUL = JSON.parse(params.get('dropBoundsUL'));
-  const dropBoundsLR = JSON.parse(params.get('dropBoundsLR'));
+  const dropBoundsUL = JSON.parse(params.get('boundsUL'));
+  const dropBoundsLR = JSON.parse(params.get('boundsLR'));
 
   window.addEventListener("load", function() {
     const imgUrls = [
