@@ -139,11 +139,11 @@
   <div class="header">
     <h1>Earth Day Fun!!</h1>
   </div>
- <div class="container">
+  <div class="container">
     <ul id="item-list">
     </ul>
   </div>
-   <div class="text-field-container">
+  <div class="text-field-container">
     <input type="text" placeholder="Enter the secret word">
     <button id="submit-button" type="submit">Submit</button>
   </div>
@@ -157,12 +157,18 @@
   </div>
 </body>
 <script>
+  const key = '8db38de2-3759-45dc-b411-d806414d7000';
+  const email = 'rex@topia.io';
+  const boundsUL = [0, 0];
+  const boundsLR = [1000, 1000];
+  const word = 'panda';
+
   document.getElementById("submit-button").addEventListener("click", function() {
     var input = document.querySelector("input[type=text]");
-    if (input.value.toLowerCase() === "dog") {
-      window.location.href = "../success/v1-0.html";
+    if (input.value.toLowerCase() === word) {
+      window.location.href = `../success/v1-0.html?key=${key}&email=${email}&boundsUL=${boundsUL}&boundsLR=${boundsLR}`;
     } else {
-      window.location.href = "../no-success/v1-0.html";
+      window.location.href = `../no-success/v1-0.html?key=${key}&email=${email}&boundsUL=${boundsUL}&boundsLR=${boundsLR}`;
     }
   });
 </script>
