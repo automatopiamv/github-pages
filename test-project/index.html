@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Welcome!</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+			font-family: Arial, sans-serif;
+			text-align: center;
+		}
+
+		.welcome-msg {
+			font-size: 32px;
+			margin-top: 50px;
+			margin-bottom: 20px;
+		}
+
+		.banner {
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			background-color: #0077be;
+			color: #fff;
+			padding: 20px;
+		}
+
+		.btn {
+			display: inline-block;
+			padding: 10px 20px;
+			background-color: #0077be;
+			color: #fff;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+			font-size: 16px;
+			margin-top: 20px;
+		}
+	</style>
+</head>
+<body>
+	<div class="welcome-msg">
+		<p>Welcome to my website!</p>
+	</div>
+	<button class="btn" id="submit-btn"></button>
+	<div class="banner">
+		<p>This is a banner at the bottom of the page.</p>
+	</div>
+	<script>
+		const urlParams = new URLSearchParams(window.location.search);
+		const submit = urlParams.get('submit');
+		document.getElementById("submit-btn").textContent = submit;
+		document.getElementById("submit-btn").addEventListener("click", function() {
+			window.location.href = "https://topia.io";
+		});
+	</script>
+</body>
+</html>
